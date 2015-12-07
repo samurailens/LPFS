@@ -1,0 +1,106 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:baselineAligned="false">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Your Order&apos;s Summary"
+        android:id="@+id/order_summary_text"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp" />
+
+    <Button
+        android:id="@+id/getordersbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="MycartView"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/order_summary_text"
+        android:layout_marginBottom="64dp"
+        android:text="completed orders" />
+
+    <!-- REad from database and populate here -->
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ListView>
+<!--
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:id="@+id/linearLayout"
+        android:background="#fee8ff"
+        android:layout_marginTop="55dp"
+        android:layout_alignStart="@+id/order_summary_text"
+        android:layout_centerHorizontal="true"
+        android:divider="#a5ff6b"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Meluha designe with Silk fabric"
+        android:id="@+id/order_1"
+        android:layout_below="@+id/order_summary_text"
+        android:layout_alignStart="@+id/order_summary_text"
+        android:layout_marginTop="20dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_below="@+id/order_summary_text"
+        android:text="Rs 500"
+        android:id="@+id/order_1_cost"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:id="@+id/linearLayout2"
+        android:background="#fee8ff"
+        android:layout_marginTop="105dp"
+        android:layout_alignStart="@+id/order_summary_text"
+        android:divider="#a5ff6b"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_alignEnd="@+id/linearLayout">
+        <TextView
+            android:layout_width="237dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Le Pape design with Cotton fabric"
+            android:id="@+id/order_2"
+            android:layout_below="@+id/order_summary_text"
+            android:layout_alignStart="@+id/order_summary_text"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/order_summary_text"
+            android:text="Rs 1500"
+            android:id="@+id/order_2_cost"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_weight="0.71" />
+
+    </LinearLayout>
+-->
+
+</RelativeLayout>

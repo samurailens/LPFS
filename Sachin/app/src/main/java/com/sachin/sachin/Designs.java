@@ -4,14 +4,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Date;
+
 
 public class Designs extends Activity {
 
@@ -21,70 +29,92 @@ public class Designs extends Activity {
     private HorizontalListView mHlvCustomList;
     private HorizontalListView mHlvCustomListWithDividerAndFadingEdge;
 
+    private String  TAG = "Designs";
     private String[] mSimpleListValues = new String[] { "Android", "List", "View" };//,
     //"Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
     //"Linux", "OS/2" };
 
+    static int previouslySelectedDesignPosition = 0;
+    static int currentSelectedDesignPistion = 0;
+    static TextView cartTextView;
+    static TextView selectedItemDescription;
+    ImageView previewImageView;
+    TextView designTitletxtview; //designPreviewtxtView
+    public ArrayList<String> existingOrdersinDb;
+    public String  lastInsertedOrderId = "-1";
+    ProgressBar progressBar;
+
     private CustomData[] mCustomData = new CustomData[] {
-            new CustomData(Color.RED, "Red"),
-            new CustomData(Color.DKGRAY, "Dark Gray"),
-            new CustomData(Color.GREEN, "Green"),
-            new CustomData(Color.LTGRAY, "Light Gray"),
-            new CustomData(Color.WHITE, "White"),
-            new CustomData(Color.RED, "Red"),
-            new CustomData(Color.BLACK, "Black"),
-            new CustomData(Color.CYAN, "Cyan"),
-            new CustomData(Color.DKGRAY, "Dark Gray"),
-            new CustomData(Color.GREEN, "Green"),
-            new CustomData(Color.RED, "Red"),
-            new CustomData(Color.LTGRAY, "Light Gray"),
-            new CustomData(Color.WHITE, "White"),
-            new CustomData(Color.BLACK, "Black"),
-            new CustomData(Color.CYAN, "Cyan"),
-            new CustomData(Color.DKGRAY, "Dark Gray"),
-            new CustomData(Color.GREEN, "Green"),
-            new CustomData(Color.LTGRAY, "Light Gray"),
-            new CustomData(Color.RED, "Red"),
-            new CustomData(Color.WHITE, "White"),
-            new CustomData(Color.DKGRAY, "Dark Gray"),
-            new CustomData(Color.GREEN, "Green"),
-            new CustomData(Color.LTGRAY, "Light Gray"),
-            new CustomData(Color.WHITE, "White"),
-            new CustomData(Color.RED, "Red"),
-            new CustomData(Color.BLACK, "Black"),
-            new CustomData(Color.CYAN, "Cyan"),
-            new CustomData(Color.DKGRAY, "Dark Gray"),
-            new CustomData(Color.GREEN, "Green"),
-            new CustomData(Color.LTGRAY, "Light Gray"),
-            new CustomData(Color.RED, "Red"),
-            new CustomData(Color.WHITE, "White"),
-            new CustomData(Color.BLACK, "Black"),
-            new CustomData(Color.CYAN, "Cyan"),
-            new CustomData(Color.DKGRAY, "Dark Gray"),
-            new CustomData(Color.GREEN, "Green"),
-            new CustomData(Color.LTGRAY, "Light Gray")
+            new CustomData(Color.RED, "Red", 100),
+            new CustomData(Color.DKGRAY, "Dark Gray" , 150),
+            new CustomData(Color.GREEN, "Green",200 ),
+            new CustomData(Color.LTGRAY, "Light Gray", 250),
+            new CustomData(Color.WHITE, "White", 300),
+            new CustomData(Color.RED, "Red", 100),
+            new CustomData(Color.BLACK, "Black", 100),
+            new CustomData(Color.CYAN, "Cyan", 100),
+            new CustomData(Color.DKGRAY, "Dark Gray", 100),
+            new CustomData(Color.GREEN, "Green", 100),
+            new CustomData(Color.RED, "Red", 100),
+            new CustomData(Color.LTGRAY, "Light Gray", 100),
+            new CustomData(Color.WHITE, "White", 100),
+            new CustomData(Color.BLACK, "Black", 100),
+            new CustomData(Color.CYAN, "Cyan", 100),
+            new CustomData(Color.DKGRAY, "Dark Gray", 100),
+            new CustomData(Color.GREEN, "Green", 100),
+            new CustomData(Color.LTGRAY, "Light Gray", 100),
+            new CustomData(Color.RED, "Red", 100),
+            new CustomData(Color.WHITE, "White", 100),
+            new CustomData(Color.DKGRAY, "Dark Gray", 100),
+            new CustomData(Color.GREEN, "Green", 100)
+//            new CustomData(Color.LTGRAY, "Light Gray", 100),
+//            new CustomData(Color.WHITE, "White"),
+//            new CustomData(Color.RED, "Red"),
+//            new CustomData(Color.BLACK, "Black"),
+//            new CustomData(Color.CYAN, "Cyan"),
+//            new CustomData(Color.DKGRAY, "Dark Gray"),
+//            new CustomData(Color.GREEN, "Green"),
+//            new CustomData(Color.LTGRAY, "Light Gray"),
+//            new CustomData(Color.RED, "Red"),
+//            new CustomData(Color.WHITE, "White"),
+//            new CustomData(Color.BLACK, "Black"),
+//            new CustomData(Color.CYAN, "Cyan"),
+//            new CustomData(Color.DKGRAY, "Dark Gray"),
+//            new CustomData(Color.GREEN, "Green"),
+//            new CustomData(Color.LTGRAY, "Light Gray")
     };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
+        setContentView(R.layout.activity_designs);
         // Get references to UI widgets
-        mHlvSimpleList = (HorizontalListView) findViewById(R.id.hlvSimpleList);
+        //mHlvSimpleList = (HorizontalListView) findViewById(R.id.hlvSimpleList);
         mHlvCustomList = (HorizontalListView) findViewById(R.id.hlvCustomList);
-        mHlvCustomListWithDividerAndFadingEdge = (HorizontalListView) findViewById(R.id.hlvCustomListWithDividerAndFadingEdge);
-
-        setupSimpleList();
+        //WithDivider
+        //mHlvCustomListWithDividerAndFadingEdge = (HorizontalListView) findViewById(R.id.hlvCustomListWithDividerAndFadingEdge);
+        //mHlvCustomListWithDividerAndFadingEdge.setVisibility(View.GONE);
+        //setupSimpleList();
         setupCustomLists();
 
-        // if( comingFromBackPressed ){
-        // then set selected to the previously selected index
-        // }
+        previouslySelectedDesignPosition = 0;
+        currentSelectedDesignPistion = 0;
+        cartTextView = (TextView) findViewById(R.id.carttxtview);
+        selectedItemDescription = (TextView) findViewById(R.id.selectedItemDescriptiontxtview);
+        selectedItemDescription.setText("Content Description is shown here");
+        designTitletxtview = (TextView) findViewById(R.id.designPreviewtxtView); //designPreviewtxtView
+        previewImageView = (ImageView) findViewById(R.id.previewImageview);
+        existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        progressBar.setProgress(0);
+
+        updateCartUI();
+
+
+        //progressBar.setBackgroundColor(Color.parseColor("#4CAF50"));
+
+        Log.d(TAG, "OnCreate Complete");
     }
-
-
-
 
     private void setupSimpleList() {
         // Make an array adapter using the built in android layout to render a list of strings
@@ -95,12 +125,56 @@ public class Designs extends Activity {
     }
 
     private void setupCustomLists() {
+        Log.d(TAG, "Setup Custom List");
         // Make an array adapter using the built in android layout to render a list of strings
         CustomArrayAdapter adapter = new CustomArrayAdapter(this, mCustomData);
 
         // Assign adapter to HorizontalListView
         mHlvCustomList.setAdapter(adapter);
-        mHlvCustomListWithDividerAndFadingEdge.setAdapter(adapter);
+
+        //Show selected item in cart
+        mHlvCustomList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view,
+                                    int position, long id) {
+
+                Log.d(TAG, "Item clicked position " + String.valueOf(position));
+                CustomData dataClicked = (CustomData) mHlvCustomList.getItemAtPosition(position);
+
+                //dataClicked.setBackgroundBorder(Color.parseColor("#FAD2DF"));
+
+                if (previouslySelectedDesignPosition == 0) {
+                    previouslySelectedDesignPosition = position;
+                } else {
+                    previouslySelectedDesignPosition = currentSelectedDesignPistion;
+                    //change the background for this item in list
+                }
+
+                //update current selection
+                currentSelectedDesignPistion = position;
+
+                //TODO:: update the background color for this item in list.
+                //dataClicked.
+
+                //TODO:: update the cart
+
+                //TODO: update the Preview Title and image
+                previewImageView.setBackgroundColor(dataClicked.getBackgroundColor());
+                designTitletxtview.setText(dataClicked.getText());
+
+                //TODO: Add Design to cart
+                MainActivity.cartNewOrder.addDesign(dataClicked.getText(), position, (int) dataClicked.getCost(), 1);
+
+                //Todo:: update content description
+                selectedItemDescription.setText("This is " + dataClicked.getText());
+                //Object o = mHlvCustomList.getItemAtPosition(position);
+                //String  str=(prestationEco)o;//As you are using Default String Adapter
+                //saveSelectedDesign();
+                Toast.makeText(getBaseContext(), "Selected " + dataClicked.getText(), Toast.LENGTH_SHORT).show();
+                Log.d(TAG, dataClicked.getText() + String.valueOf(position) + String.valueOf(dataClicked.getCost()) + String.valueOf(1));
+            }
+        });
+        //with divider
+        //mHlvCustomListWithDividerAndFadingEdge.setAdapter(adapter);
     }
 
     @Override
@@ -110,10 +184,132 @@ public class Designs extends Activity {
         return true;
     }
 
-    public void itemSel(View v){
-        /*Intent i = new Intent(this, Selected_Item.class);
-        i.putExtra(Selected_Item.Name, "Item Selected" );
+       public void selectFabric(View v){
 
-        startActivity(i);*/
+        if ( MainActivity.cartNewOrder.checkIfDesignIsSelected() ) {
+       /* SendMail sndMail = new SendMail();
+        SendMail.myappContext = getApplicationContext();
+        sndMail.sendMail("48.rohit@gmail.com", "Test Subj", "Test Mesg");*/
+
+        Intent intent =  new Intent(this, Fabric.class);
+            intent.putExtra("lenreq",1 );
+            startActivity(intent);
+
+        }else {
+            Toast.makeText(getBaseContext(),"Please select at least one design to continue.", Toast.LENGTH_SHORT).show();
+        }
+        //
+    }
+
+    private void updateCartUI(){
+        //MainActivity.cartNewOrder.updateCart(MainActivity.mydbmanager.getAllOrders().size());
+        int i = 0 ;// MainActivity.mydbmanager.getAllOrders().size();
+        //Sachin : Dont show till both D & F are selected.
+        //Show only of those Status is complete.
+        i = MainActivity.mydbmanager.getOrderWithDNFSelected();
+        cartTextView.setText("Cart(" + String.valueOf(i) + ")");
+    }
+
+    public  void cart(View v){
+        overridePendingTransition(0, 0);
+        JSONObject neworder = MainActivity.cartNewOrder.getDetails();
+        if( MainActivity.mydbmanager.getAllOrders().size() > 0) {
+            Intent i = new Intent(this, ShoppingCart.class);
+            startActivity(i);
+        }
+    }
+
+    public void addtocart(View v){
+        overridePendingTransition(0,0);
+        Button btnAddToCart = (Button) findViewById(R.id.adddesgntocartbutton);
+        Date currentDate = new Date(System.currentTimeMillis());
+        JSONObject neworder = MainActivity.cartNewOrder.getDetails();
+
+        //todo:
+        //UPDATE THE CART UI
+        //ADD THE ORDER TO db
+        //SEND EMAIL / SMS CONFIRMATION TO STORE
+        if ( MainActivity.cartNewOrder.checkIfDesignIsSelected() ) {
+            boolean isOrderinCart = isOrderAlreadyInCart();
+            if(!isOrderinCart){
+                MainActivity.mydbmanager.insertOrder(neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.DESIGN_SELECTION_IN_PROGRESS));
+                existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
+                lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
+                Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId);
+            }else {
+                updateExistingOrder();
+                Toast.makeText(Designs.this, "Updated existing order.", Toast.LENGTH_SHORT).show();
+            }
+            //Update cart size
+            updateCartUI();
+            btnAddToCart.setText("Update");
+            Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
+            progressBar.setProgress(33);
+        }else {
+            Toast.makeText(this, "Please select a design", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    public void saveSelectedDesign(){
+        Date currentDate = new Date(System.currentTimeMillis());
+        JSONObject neworder = MainActivity.cartNewOrder.getDetails();
+
+        if ( MainActivity.cartNewOrder.checkIfDesignIsSelected() ) {
+            boolean isOrderinCart = isOrderAlreadyInCart();
+            if(!isOrderinCart){
+                MainActivity.mydbmanager.insertOrder(neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.DESIGN_SELECTION_IN_PROGRESS));
+                existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
+                lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
+                Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId);
+            }else {
+                updateExistingOrder();
+                Toast.makeText(Designs.this, "Updated existing order.", Toast.LENGTH_SHORT).show();
+            }
+            //Update cart size
+            updateCartUI();
+
+            Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
+        }else {
+            Toast.makeText(this, "Please select a design", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void updateExistingOrder(){
+        int i = Integer.parseInt(lastInsertedOrderId);
+        if( i > 0) {
+            MainActivity.mydbmanager.updateOrderDetails(MainActivity.cartNewOrder.getDetails().toString(), i);
+        }
+    }
+
+    private boolean isOrderAlreadyInCart(){
+        JSONObject neworder = MainActivity.cartNewOrder.getDetails();
+        boolean isNewOrderpresentInExistingOrders  = false ;
+
+        isNewOrderpresentInExistingOrders = existingOrdersinDb.contains(neworder.toString());
+
+        if(!isNewOrderpresentInExistingOrders){
+            //Order not in Cart. Check any new Order added this session.
+            int i = Integer.parseInt(lastInsertedOrderId);
+            if( i > 0){
+                //There was an order added in this session, update same order
+                Log.d(TAG, "isOrderAlreadyInCart i="+String.valueOf(i));
+                return true;
+            }
+
+        }
+
+        return isNewOrderpresentInExistingOrders;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        updateCartUI();
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
     }
 }

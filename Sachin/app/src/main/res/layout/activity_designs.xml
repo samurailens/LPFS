@@ -1,63 +1,243 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:widget="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:widget="http://schemas.android.com/apk/res-auto"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true">
+
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical"
+            android:baselineAligned="true"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:background="@null"
+                android:layout_width="fill_parent"
+                android:weightSum="3"
+                android:layout_height="wrap_content">
+                <ProgressBar
+                    style="?android:attr/progressBarStyleHorizontal"
+
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/progressBar"
+                    android:layout_gravity="center_horizontal"
+                    android:background="#ff9d24" />
+                <!--
+                            <View
+                                android:layout_weight="1"
+
+                                android:background="#ff9d24"
+                                android:layout_width="30dp"
+                                android:layout_height="50dp"
+                                android:id="@+id/desProg">
+
+                            </View>
+                            <View
+                                android:layout_weight="1"
+
+                                android:background="#dcddd1"
+                                android:layout_width="30dp"
+                                android:layout_height="50dp"
+                                android:id="@+id/FabProg">
+
+                            </View>
+                            <View
+                                android:layout_weight="1"
+
+                                android:background="#dcddd1"
+                                android:layout_width="30dp"
+                                android:layout_height="50dp"
+                                android:id="@+id/MeasProg">
+
+                            </View>
+                -->
+            </LinearLayout>
+            <!--
+                    <com.sachin.sachin.HorizontalListView
+                        android:id="@+id/hlvSimpleList"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        />
+            -->
+
+
+            <TextView
+                android:id="@+id/designPreviewtxtView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal|left"
+                android:padding="5dp"
+                android:text="@string/custom_adapter_list"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="213dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:background="@android:color/holo_blue_dark"
+                android:layout_weight="0.66"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/previewImageview"/>
+
+
+
+                <TextView
+
+                    android:id="@+id/selectedItemDescriptiontxtview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:backgroundTint="@color/material_grey_300"
+                    android:elegantTextHeight="true"
+                    android:text="Content Description is shown here"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:padding="5dp" />
+            <LinearLayout
+                android:weightSum="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
+                <TextView
+                    android:layout_weight="1.25"
+                    android:text="Price : Rs. 100"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:id="@+id/priceTxtView"
+                    android:textColor="#ff7009"
+                    android:textSize="20sp"
+                    android:layout_gravity="left"
+                    android:gravity="top|left"
+                    android:textAlignment="gravity"
+                    android:typeface="serif"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp" />
+                <Button
+                    android:layout_weight="0.25"
+                    android:id="@+id/adddesgntocartbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/buttonstrokeshape"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:clickable="true"
+                    android:onClick="addtocart"
+                    android:text="Select"
+                    android:visibility="visible"
+                    android:layout_gravity="right"
+                    android:textColor="#ff7009"
+                    android:backgroundTint="#dcddd1" />
+
+
+            </LinearLayout>
+
+
+
+            <com.sachin.sachin.HorizontalListView
+                android:id="@+id/hlvCustomList"
+                widget:dividerWidth="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="25dp"
+                android:layout_gravity="bottom|center_horizontal" />
+
+            <!--
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:text="@string/custom_adapter_list_with_dividers"
+                android:textSize="18sp" />
+
+            <com.sachin.sachin.HorizontalListView
+                android:id="@+id/hlvCustomListWithDividerAndFadingEdge"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:divider="#e00"
+                android:fadingEdgeLength="5dp"
+                android:requiresFadingEdge="horizontal"
+                widget:dividerWidth="3dp" />
+        -->
+
+            <!--
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="2"
+                >
+
+
+
+                        <Button
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:layout_weight="1"
+                android:text="get this \n "
+                android:background="#ff7522"
+
+                />
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="49dp"
+                android:layout_weight="1"
+                android:text="add to wishlist \n "
+                android:background="#ffaa1d"
+                android:id="@+id/adddesigntowishlistbtn" />
+
+            </LinearLayout>-->
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
+        android:weightSum="2"
+        android:gravity="bottom|center"
+        android:baselineAligned="true">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:autoLink="all"
-            android:linksClickable="true"
-            android:clickable="true"
-            android:onClick="itemSel"
-            android:text="String"
-            android:textSize="18sp" />
+        <Button android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Cart(0)"
+            android:drawableLeft="@drawable/shopping_cart_24"
 
-        <com.meetme.android.horizontallistview.HorizontalListView
-            android:id="@+id/hlvSimpleList"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            />
+            android:background="#e91e63"
+            android:id="@+id/carttxtview"
+            android:paddingRight="50dp"
+            android:paddingLeft="50dp"
+            android:onClick="cart"
+            android:textSize="12sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="5dp"
-            android:text="@string/custom_adapter_list"
-            android:textSize="18sp" />
+        <Button android:layout_width="0dp"
+            android:layout_height="49dp"
+            android:layout_weight="1"
+            android:background="#4CAF50"
+            android:text="Select Fabric "
+            android:id="@+id/selectfabricbtn"
+            android:onClick="selectFabric"
+            android:textSize="12sp"
+            android:enabled="true" />
 
-        <com.meetme.android.horizontallistview.HorizontalListView
-            android:id="@+id/hlvCustomList"
-            android:layout_width="match_parent"
-            android:layout_height="50dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="5dp"
-            android:text="@string/custom_adapter_list_with_dividers"
-            android:textSize="18sp" />
-
-        <com.meetme.android.horizontallistview.HorizontalListView
-            android:id="@+id/hlvCustomListWithDividerAndFadingEdge"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:divider="#e00"
-            android:fadingEdgeLength="5dp"
-            android:requiresFadingEdge="horizontal"
-            widget:dividerWidth="3dp" />
     </LinearLayout>
+    <!--</LinearLayout>-->
 
-</ScrollView>
+
+    <!--</ScrollView>-->
+</RelativeLayout>

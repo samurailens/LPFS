@@ -1,0 +1,43 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:baselineAligned="false">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Le Pape"
+        android:id="@+id/app_name_about"
+        android:layout_marginTop="84dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/about_version" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="version 0.1"
+        android:id="@+id/about_version"
+        android:layout_below="@+id/app_name_about"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Build date : 11-11-2015"
+        android:id="@+id/about_build_date"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/about_version" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Endurance Labs"
+        android:id="@+id/about_organization"
+        android:layout_marginTop="43dp"
+        android:layout_below="@+id/about_build_date"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

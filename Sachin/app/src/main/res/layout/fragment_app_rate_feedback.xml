@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:baselineAligned="false">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Rate Le Pape"
+        android:id="@+id/rate_title"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp" />
+
+    <RatingBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ratingBar"
+        android:layout_below="@+id/rate_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="38dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:id="@+id/ratebtn"
+        android:layout_marginTop="144dp"
+        android:layout_below="@+id/ratingBar"
+        android:layout_toEndOf="@+id/rate_title" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/commentstxtview"
+        android:layout_below="@+id/ratingBar"
+        android:layout_alignStart="@+id/ratingBar"
+        android:layout_marginTop="46dp"
+        android:layout_alignEnd="@+id/ratingBar"
+        android:editable="true"
+        android:enabled="true"
+        android:hint="Comments"
+        android:inputType="textAutoCorrect|text|textMultiLine" />
+
+
+</RelativeLayout>

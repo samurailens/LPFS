@@ -1189,6 +1189,7 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
      */
     @Override
     public void setOnClickListener(OnClickListener listener) {
+
         mOnClickListener = listener;
     }
 

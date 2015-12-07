@@ -1,9 +1,15 @@
 <resources>
-    <string name="app_name">Sachin</string>
+    <string name="app_name">Le Pape </string>
 
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section1">Login</string>
+    <string name="title_section2">Sign up</string>
+
+    <string name="title_section_my_orders">My Orders</string>
+    <string name="title_section_my_wish_list">My Wishlist</string>
+    <string name="title_section_help_usage">Help</string>
+    <string name="title_section_rate_app">Rate and Feedback</string>
+
+    <string name="title_section3">About</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -18,7 +24,13 @@
 
 
     <string name="simple_string_list">Simple String List</string>
-    <string name="custom_adapter_list">Custom Adapter List</string>
+    <string name="custom_adapter_list">Available Designs </string>
     <string name="custom_adapter_list_with_dividers">Custom Adapter List with dividers</string>
     <string name="title_activity_selected__item">Selected_Item</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_fabric">Fabric</string>
+    <string name="title_activity_checkout">Checkout</string>
+    <string name="title_activity_measurements">Measurements</string>
 </resources>

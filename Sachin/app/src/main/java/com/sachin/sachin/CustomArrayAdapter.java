@@ -5,6 +5,7 @@ package com.sachin.sachin;
  */
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 /** An array adapter that knows how to render views when given CustomData classes */
 public class CustomArrayAdapter extends ArrayAdapter<CustomData> {
     private LayoutInflater mInflater;
+    String TAG="CustomArrayAdapter";
 
     public CustomArrayAdapter(Context context, CustomData[] values) {
         super(context, R.layout.custom_data_view, values);
@@ -33,12 +35,16 @@ public class CustomArrayAdapter extends ArrayAdapter<CustomData> {
             holder = new Holder();
             holder.textView = (TextView) convertView.findViewById(R.id.textView);
             convertView.setTag(holder);
+
+
+            Log.d(TAG, String.valueOf(holder.textView.getText()));
         } else {
             holder = (Holder) convertView.getTag();
         }
 
         // Populate the text
         holder.textView.setText(getItem(position).getText());
+        Log.d(TAG, "Populate the text position: " + String.valueOf(position) + "\t val: " + getItem(position).getText());
 
         // Set the color
         convertView.setBackgroundColor(getItem(position).getBackgroundColor());

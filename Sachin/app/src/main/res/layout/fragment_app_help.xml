@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:baselineAligned="false">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Help"
+        android:id="@+id/help_title"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:id="@+id/linearLayout"
+        android:background="#fee8ff"
+        android:divider="#a5ff6b"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_below="@+id/help_title"
+        android:layout_alignStart="@+id/linearLayout2"
+        android:layout_alignEnd="@+id/linearLayout2">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Order a blouse"
+        android:id="@+id/help_topic_1"
+        android:layout_below="@+id/order_summary_text"
+        android:layout_alignStart="@+id/order_summary_text"
+        android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="2"
+        android:id="@+id/linearLayout2"
+        android:background="#fee8ff"
+        android:divider="#a5ff6b"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_below="@+id/linearLayout"
+        android:layout_toEndOf="@+id/help_title">
+        <TextView
+            android:layout_width="138dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Review Order"
+            android:id="@+id/help_review_order"
+            android:layout_below="@+id/order_summary_text"
+            android:layout_alignStart="@+id/order_summary_text"
+            android:layout_marginTop="20dp" />
+
+    </LinearLayout>
+
+
+</RelativeLayout>
