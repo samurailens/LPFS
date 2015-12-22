@@ -4,8 +4,8 @@
     <string name="title_section1">Login</string>
     <string name="title_section2">Sign up</string>
 
-    <string name="title_section_my_orders">My Orders</string>
-    <string name="title_section_my_wish_list">My Wishlist</string>
+    <string name="title_section_my_orders">Your Orders</string>
+    <string name="title_section_my_wish_list">Your Wishlist</string>
     <string name="title_section_help_usage">Help</string>
     <string name="title_section_rate_app">Rate and Feedback</string>
 

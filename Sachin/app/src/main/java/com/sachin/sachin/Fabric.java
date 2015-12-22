@@ -1,7 +1,10 @@
 package com.sachin.sachin;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,7 +17,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Intent;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONObject;
 
@@ -46,11 +51,11 @@ public class Fabric extends Activity {
 
     private CustomData[] mCustomData = new CustomData[] {
             //Co;pr , Name , cost
-            new CustomData(Color.RED, "Red", 100),
-            new CustomData(Color.DKGRAY, "Dark Gray" , 150),
-            new CustomData(Color.GREEN, "Green",200 ),
-            new CustomData(Color.LTGRAY, "Light Gray", 250),
-            new CustomData(Color.WHITE, "White", 300),
+            new CustomData("Variety pattern", "http://trycatchthrow.in/LPFS/images/patterns/variety.png", 100),
+            new CustomData("Floral patter", "http://trycatchthrow.in/LPFS/images/patterns/floral_pattern.png" , 150),
+            new CustomData("Red grey pattern", "http://trycatchthrow.in/LPFS/images/patterns/red_grey_pattern.png",200 ),
+            new CustomData("Square red pattern", "http://trycatchthrow.in/LPFS/images/patterns/square_red_pattern.png", 250),
+/*            new CustomData(Color.WHITE, "White", 300),
             new CustomData(Color.RED, "Red", 100),
             new CustomData(Color.BLACK, "Black", 100),
             new CustomData(Color.CYAN, "Cyan", 100),
@@ -67,7 +72,7 @@ public class Fabric extends Activity {
             new CustomData(Color.RED, "Red", 100),
             new CustomData(Color.WHITE, "White", 100),
             new CustomData(Color.DKGRAY, "Dark Gray", 100),
-            new CustomData(Color.GREEN, "Green", 100)
+            new CustomData(Color.GREEN, "Green", 100)*/
 //            new CustomData(Color.LTGRAY, "Light Gray", 100),
 //            new CustomData(Color.WHITE, "White"),
 //            new CustomData(Color.RED, "Red"),
@@ -107,7 +112,7 @@ public class Fabric extends Activity {
         previewImageViewFabric = (ImageView) findViewById(R.id.previewImageviewfabric);
         cartTextView = (TextView) findViewById(R.id.carttxtviewfabric);
         selectedItemDescription = (TextView) findViewById(R.id.selectedItemDescriptiontxtviewfabric);
-        selectedItemDescription.setText("Content Description is shown here");
+        //selectedItemDescription.setText("Content Description is shown here");
         existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
         lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -152,22 +157,98 @@ public class Fabric extends Activity {
                 currentSelectedDesignPistion = position;
 
                 //TODO:: update the background color for this item in list.
-                //dataClicked.
-                previewImageViewFabric.setBackgroundColor(dataClicked.getBackgroundColor());
+                //previewImageViewFabric.setBackgroundColor(dataClicked.getBackgroundColor());
                 //TODO:: update the cart
 
-                //cartNewOrder.addDesign(dataClicked.getText(), position, (int) dataClicked.getCost(), 1);
-                MainActivity.cartNewOrder.addFabric(dataClicked.getText(),position, (int ) dataClicked.getCost() , 1);// addDesign(dataClicked.getText(), position, (int) dataClicked.getCost(), 1);
+                String url = Designs.selectedDesignUrl; //"http://trycatchthrow.in/LPFS/images/designs/oneshoulderwaistline.png";
+                Picasso.with(MainActivity.context)
+                        .load(url)
+                        .into(previewImageViewFabric);
 
+                int w = previewImageViewFabric.getWidth();
+                int h = previewImageViewFabric.getHeight();
+
+                //dataClicked.getText()
+                MainActivity.cartNewOrder.addFabric(dataClicked.getBackgroundColor(), position, (int) dataClicked.getCost(), 1);// addDesign(dataClicked.getText(), position, (int) dataClicked.getCost(), 1);
+
+                addtocart(view);
                 //cartTextView.setText(dataClicked.getText() + "\n" + String.valueOf(dataClicked.getCost()) );
 
                 //Todo:: update content description
-                selectedItemDescription.setText("This is "+ dataClicked.getText());
-                //Object o = mHlvCustomList.getItemAtPosition(position);
+                //selectedItemDescription.setText("This is " + dataClicked.getText());
+                Log.d(TAG, "h , w " + String.valueOf(h) + "\t w " +  String.valueOf(w)) ;
 
-                //saveSelectedFabric();
-                //String  str=(prestationEco)o;//As you are using Default String Adapter
-                Toast.makeText(getBaseContext(), "Selected " + dataClicked.getText(), Toast.LENGTH_SHORT).show();
+                url = dataClicked.getText();
+                Picasso.with(MainActivity.context).load(url).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        Drawable d = new BitmapDrawable(getResources(), bitmap);
+                        previewImageViewFabric.setBackground(d);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+                    }
+                });
+                //Overlay -
+/*                url = "http://trycatchthrow.in/LPFS/images/designs/oneshoulderwaistline.png";
+                ImageView previewImageviewfabricandDesing = (ImageView) findViewById(R.id.previewImageviewfabricandDesing);
+                Picasso.with(MainActivity.context)
+                        .load(url)
+                        .into(previewImageviewfabricandDesing);*/
+
+//                Target target = new Target() {
+//                    @Override
+//                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                    }
+//
+//                    @Override
+//                    public void onBitmapFailed(Drawable d) {
+//                    }
+//
+//                    @Override
+//                    public void onPrepareLoad(Drawable r) {
+//
+//                    }
+//                };
+//
+//                //private void loadBitmap() {
+//                Picasso.with(getApplicationContext()).load(url).into(target);
+//                //};
+//
+////                Resources r = getResources();
+////                Drawable[] layers = new Drawable[2];
+////                layers[0] = r.getDrawable(Picasso.with(getApplicationContext()).load(url));
+////                layers[1] = r.getDrawable(R.drawable.tt);
+////                LayerDrawable layerDrawable = new LayerDrawable(layers);
+////                previewImageViewFabric.setImageDrawable(layerDrawable);
+//
+//                Picasso.with(getApplicationContext()).load(url).into(new Target() {
+//                    @Override
+//                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+//                        Drawable d = new BitmapDrawable(getResources(), bitmap);
+//                        previewImageViewFabric.setBackground(d);
+//                    }
+//
+//                    @Override
+//                    public void onBitmapFailed(Drawable errorDrawable) {
+//                    }
+//
+//                    @Override
+//                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+//                    }
+//                });
+                //loadBitmap();
+
+                CartManager cartManager = new CartManager();
+                String url2 = "http://trycatchthrow.in/LPFS/images/designs/oneshoulderwaistline.png";
+                cartManager.loadImages( url2 , url);
+                //~Overlay
+
             }
         });
         //with divider
@@ -225,7 +306,7 @@ public class Fabric extends Activity {
                 Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId + "Status " + String.valueOf(ORDER_STATUS.FABRIC_SELECTION_IN_PROGRESS));
             }else {
                 updateExistingOrder();
-                Toast.makeText(Fabric.this, "Updated existing order.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Fabric.this, "Updated order.", Toast.LENGTH_SHORT).show();
             }
             //Update cart size
             updateCartUI();
@@ -233,7 +314,7 @@ public class Fabric extends Activity {
             Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
             progressBar.setProgress(66);
         }else {
-            Toast.makeText(this, "Please select a fabric", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Select a fabric", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -249,14 +330,14 @@ public class Fabric extends Activity {
                 Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId);
             }else {
                 updateExistingOrder();
-                Toast.makeText(Fabric.this, "Updated existing order.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Fabric.this, "Updated order.", Toast.LENGTH_SHORT).show();
             }
             //Update cart size
             updateCartUI();
 
             Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
         }else {
-            Toast.makeText(this, "Please select a fabric", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Select a fabric", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -267,7 +348,7 @@ public class Fabric extends Activity {
             Intent i = new Intent(this, Measurements.class);
             startActivity(i);
         }else {
-            Toast.makeText(this,"Please select a design and fabric combination.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Select a design and fabric combination.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -325,4 +406,12 @@ public class Fabric extends Activity {
     public void onStart(){
         super.onStart();
     }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        updateCartUI();
+    }
+
+
 }

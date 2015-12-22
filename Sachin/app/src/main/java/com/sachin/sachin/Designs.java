@@ -2,18 +2,18 @@ package com.sachin.sachin;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -44,8 +44,20 @@ public class Designs extends Activity {
     public String  lastInsertedOrderId = "-1";
     ProgressBar progressBar;
 
+    public static String selectedDesignUrl;
+
+    //OverLay h, w
+    static int Imgh,Imgw;
+
     private CustomData[] mCustomData = new CustomData[] {
-            new CustomData(Color.RED, "Red", 100),
+            new CustomData("One shoulder waist line", "http://trycatchthrow.in/LPFS/images/designs/oneshoulderwaistline.png", 100),
+            new CustomData("Scalloped collar", "http://trycatchthrow.in/LPFS/images/designs/scalloped_collar.png", 100),
+
+            new CustomData("Square neck", "http://trycatchthrow.in/LPFS/images/designs/squareneck.png", 100),
+            new CustomData("Sweetheart neckline", "http://trycatchthrow.in/LPFS/images/designs/sweetheartneckline.png", 100),
+
+
+/*            new CustomData(Color.RED, "Red", 100),
             new CustomData(Color.DKGRAY, "Dark Gray" , 150),
             new CustomData(Color.GREEN, "Green",200 ),
             new CustomData(Color.LTGRAY, "Light Gray", 250),
@@ -66,7 +78,7 @@ public class Designs extends Activity {
             new CustomData(Color.RED, "Red", 100),
             new CustomData(Color.WHITE, "White", 100),
             new CustomData(Color.DKGRAY, "Dark Gray", 100),
-            new CustomData(Color.GREEN, "Green", 100)
+            new CustomData(Color.GREEN, "Green", 100)*/
 //            new CustomData(Color.LTGRAY, "Light Gray", 100),
 //            new CustomData(Color.WHITE, "White"),
 //            new CustomData(Color.RED, "Red"),
@@ -101,7 +113,7 @@ public class Designs extends Activity {
         currentSelectedDesignPistion = 0;
         cartTextView = (TextView) findViewById(R.id.carttxtview);
         selectedItemDescription = (TextView) findViewById(R.id.selectedItemDescriptiontxtview);
-        selectedItemDescription.setText("Content Description is shown here");
+        //selectedItemDescription.setText("Content Description is shown here");
         designTitletxtview = (TextView) findViewById(R.id.designPreviewtxtView); //designPreviewtxtView
         previewImageView = (ImageView) findViewById(R.id.previewImageview);
         existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
@@ -158,18 +170,35 @@ public class Designs extends Activity {
                 //TODO:: update the cart
 
                 //TODO: update the Preview Title and image
-                previewImageView.setBackgroundColor(dataClicked.getBackgroundColor());
-                designTitletxtview.setText(dataClicked.getText());
+                //COLOR previewImageView.setBackgroundColor(dataClicked.getBackgroundColor());
+
+                String url = dataClicked.getText();
+                selectedDesignUrl = url;
+                Picasso.with(MainActivity.context)
+                        .load(url)
+                        .into(previewImageView);
+
+                //designTitletxtview.setText(dataClicked.getText());
 
                 //TODO: Add Design to cart
-                MainActivity.cartNewOrder.addDesign(dataClicked.getText(), position, (int) dataClicked.getCost(), 1);
+                MainActivity.cartNewOrder.addDesign(dataClicked.getBackgroundColor(), position, (int) dataClicked.getCost(), 1);
 
                 //Todo:: update content description
-                selectedItemDescription.setText("This is " + dataClicked.getText());
+                //selectedItemDescription.setText("This is " + dataClicked.getText());
+
                 //Object o = mHlvCustomList.getItemAtPosition(position);
                 //String  str=(prestationEco)o;//As you are using Default String Adapter
                 //saveSelectedDesign();
-                Toast.makeText(getBaseContext(), "Selected " + dataClicked.getText(), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), "Selected " + dataClicked.getText(), Toast.LENGTH_SHORT).show();
+
+                addtocart(view);
+
+                int w = previewImageView.getWidth();
+                int h = previewImageView.getHeight();
+                Imgh = h;
+                Imgw = w;
+                Log.d(TAG, "h , w " + String.valueOf(h) + "\t w " + String.valueOf(w)) ;
+
                 Log.d(TAG, dataClicked.getText() + String.valueOf(position) + String.valueOf(dataClicked.getCost()) + String.valueOf(1));
             }
         });
@@ -196,7 +225,7 @@ public class Designs extends Activity {
             startActivity(intent);
 
         }else {
-            Toast.makeText(getBaseContext(),"Please select at least one design to continue.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getBaseContext(),"Select at least one design to continue.", Toast.LENGTH_SHORT).show();
         }
         //
     }
@@ -216,12 +245,14 @@ public class Designs extends Activity {
         if( MainActivity.mydbmanager.getAllOrders().size() > 0) {
             Intent i = new Intent(this, ShoppingCart.class);
             startActivity(i);
+        }else {
+            Log.d(TAG, "Nothing to go to cart");
         }
     }
 
     public void addtocart(View v){
         overridePendingTransition(0,0);
-        Button btnAddToCart = (Button) findViewById(R.id.adddesgntocartbutton);
+        //Button btnAddToCart = (Button) findViewById(R.id.adddesgntocartbutton);
         Date currentDate = new Date(System.currentTimeMillis());
         JSONObject neworder = MainActivity.cartNewOrder.getDetails();
 
@@ -238,15 +269,15 @@ public class Designs extends Activity {
                 Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId);
             }else {
                 updateExistingOrder();
-                Toast.makeText(Designs.this, "Updated existing order.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Designs.this, "Updated order.", Toast.LENGTH_SHORT).show();
             }
             //Update cart size
             updateCartUI();
-            btnAddToCart.setText("Update");
+            //btnAddToCart.setText("Update");
             Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
             progressBar.setProgress(33);
         }else {
-            Toast.makeText(this, "Please select a design", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Select a design", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -264,14 +295,14 @@ public class Designs extends Activity {
                 Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId);
             }else {
                 updateExistingOrder();
-                Toast.makeText(Designs.this, "Updated existing order.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Designs.this, "Updated order.", Toast.LENGTH_SHORT).show();
             }
             //Update cart size
             updateCartUI();
 
             Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
         }else {
-            Toast.makeText(this, "Please select a design", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Select a design", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -311,5 +342,12 @@ public class Designs extends Activity {
     @Override
     public void onStart(){
         super.onStart();
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        updateCartUI();
+        new Intent(this, MainActivity.class);
     }
 }

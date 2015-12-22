@@ -3,30 +3,10 @@ package com.sachin.sachin;
 /**
  * Created by samurai on 21-Nov-15.
  */
-import javax.activation.DataHandler;
-import javax.mail.Authenticator;
-import javax.mail.BodyPart;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.NoSuchProviderException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Store;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
-import android.app.Activity;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-
-import com.sun.mail.imap.IMAPStore;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Properties;
@@ -41,17 +21,54 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 public class SendMail {
-    private static final String username = "48.rohit@gmail.com";
-    private static final String password = "samurai48lens!";
+    private static final String username = "sachinrohit.e@gmail.com";
+    private static final String password = "samurai$*";
     public static Context myappContext;
 
 
-    private Message createMessage(String email, String subject, String messageBody, Session session) throws MessagingException, UnsupportedEncodingException {
+    private MimeMessage createMessage(String email, String subject, String messageBody, Session session) throws MessagingException, UnsupportedEncodingException {
+       // Message
+/*
+        WORKING CODE : PLAIN MESSAGE
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress("48.rohit@gmail.com", "Sachin Rohit"));
+        message.setFrom(new InternetAddress("sachinrohit.e@gmail.com", "Sachin Rohit"));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(email, email));
         message.setSubject(subject);
-        message.setText(messageBody);
+        message.setText(messageBody);//, "text/html" , "utf-8");
+*/
+
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress("sachinrohit.e@gmail.com", "Sachin Rohit"));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(email, email));
+        message.setSubject(subject);
+        message.setText(messageBody, "utf-8", "html");//, "text/html" , "utf-8");
+        //message.setContent(messageBody, "text/html; charset=utf-8");
+
+/*        Multipart _multipart = new MimeMultipart();
+        // There is something wrong with MailCap, javamail can not find a handler for the multipart/mixed part, so this bit needs to be added.
+        MailcapCommandMap mc = (MailcapCommandMap) CommandMap.getDefaultCommandMap();
+        mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
+        mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
+        mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
+        mc.addMailcap("multipart*//*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
+        mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+        CommandMap.setDefaultCommandMap(mc);
+
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress("sachinrohit.e@gmail.com", "Le Pape Fashion Store"));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(email, email));
+        message.setSubject(subject);
+        message.setSentDate(new Date());
+        // setup message body
+        BodyPart messageBodyPart = new MimeBodyPart();
+
+        messageBodyPart.setContent(messageBody, "text/html");
+        _multipart.addBodyPart(messageBodyPart);
+
+        // Put parts in message
+        message.setContent(_multipart, "text/html");*/
+
         return message;
     }
 
@@ -99,7 +116,7 @@ public class SendMail {
         Session session = createSessionObject();
 
         try {
-            Message message = createMessage(email, subject, messageBody, session);
+            MimeMessage message = createMessage(email, subject, messageBody, session);
             new SendMailTask().execute(message);
         } catch (AddressException e) {
             e.printStackTrace();
@@ -110,7 +127,7 @@ public class SendMail {
         }
     }
 
-    private class SendMailTask extends AsyncTask<Message, Void, Void> {
+    private class SendMailTask extends AsyncTask<MimeMessage, Void, Void> {
         private ProgressDialog progressDialog;
 
         @Override
@@ -126,7 +143,7 @@ public class SendMail {
         }
 
         @Override
-        protected Void doInBackground(Message... messages) {
+        protected Void doInBackground(MimeMessage... messages) {
             try {
                 Transport.send(messages[0]);
             } catch (MessagingException e) {

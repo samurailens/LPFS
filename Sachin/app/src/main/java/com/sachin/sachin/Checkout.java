@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,10 +21,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
-import java.sql.SQLDataException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +36,9 @@ public class Checkout extends Activity {
     ArrayAdapter myAdapter;
     ListView orderList;
     List<String> orderIdsFromDb;
+    List<String> listTitle;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +54,7 @@ public class Checkout extends Activity {
         List list = MainActivity.mydbmanager.getAllOrders() ;
 
 
-        List<String> listTitle = new ArrayList<String>();
+        listTitle = new ArrayList<String>();
 
         if(list.size() > 0 ) {
             for (int i = 0; i < list.size(); i++) {
@@ -130,6 +133,12 @@ public class Checkout extends Activity {
         }catch (SQLiteException e){
             e.printStackTrace();
         }
+
+        if(position == 0) {
+            MainActivity.cartNewOrder.clear();
+        }
+
+        updateCart();
         Log.d(TAG, "Delete from cart " + String.valueOf(position) );
     }
 
@@ -209,10 +218,76 @@ public class Checkout extends Activity {
     }
 
     public void placeOrder(View v){
-
         //Go to home
-        Toast.makeText(this, "Thanks for placing order! We will contact you shortly.", Toast.LENGTH_LONG).show();
-        startActivity(new Intent(this, MainActivity.class));
+
+        SendMail sendMail = new SendMail();
+        String orderDetails = "";
+        String toEmailAddress = MainActivity.activeUserEmail;
+
+        if( !toEmailAddress.contains("@")){
+            Toast.makeText(this, "Sign in to place your order", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, MainActivity.class));
+        }
+
+
+        listTitle.size();
+        String tmpline = "-----------------------------------------------------------------------------------------";
+        List<String > OrderListToSend = new ArrayList<String>();
+        try{
+            for(int i=0 ; i< listTitle.size(); i++){
+            Object a  =  listTitle.get(i);
+            a.hashCode();
+            Log.d(TAG, "Object " + a.toString());
+               Object json = new JSONTokener(a.toString()).nextValue();
+                if (json instanceof JSONObject) {
+                    //you have an object
+                    Object designName = ((JSONObject) json).get("designName");
+                    Object fabricName = ((JSONObject) json).get("fabricName");
+                    Object fabricFabCost = ((JSONObject) json).get("fabricFabCost");
+                    Object designCost = ((JSONObject) json).get("designCost");
+                    int totalCost = Integer.parseInt(fabricFabCost.toString()) + Integer.parseInt(designCost.toString());
+                    String tempOrder = "\n\n<p> <b> Design : " + designName + " </b> \t Price : <b> Rs."+ designCost + "</b></p>"+ "\n<p><b>Fabric : " + fabricName + "</b>\t Price : <b>Rs." + fabricFabCost + "</b> </p>"+ "\n\n<p>Total : Rs."+ String.valueOf(totalCost) + "</p>\n\n" ;
+                    OrderListToSend.add(tempOrder);
+                    orderDetails +=  tempOrder ;
+                    //holder.textView.setText("Design: " + designName.toString() + "\nFabric: " + fabricName.toString() ); //+ " Rs." + String.valueOf(i)
+                    //holder.orderCost.setText("Rs."+ String.valueOf(i));
+                }
+                else if (json instanceof JSONArray) {
+                    //you have an array
+                    Object b = ((JSONArray) json).get(0);
+                    b.hashCode();
+                }
+            }
+
+            List listOrderIds = MainActivity.mydbmanager.getAllOrdersIds();
+            if(listOrderIds.size() > 0 ) {
+                for (int i = 0; i < listOrderIds.size(); i++) {
+                    MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.ORDER_PLACED_TO_STORE), Integer.parseInt(listOrderIds.get(i).toString()));
+                }
+            }
+
+            //JSONArray ar = new JSONArray(getItem(position));
+            // KO Object [] a =  getItem(position).toArray();
+            //KO String s = getItem(position).toString();
+            //KO JSONObject jsonObj = new JSONObject(getItem(position));
+            /* JSONObject jsonObj = new JSONObject(getItem(position).toString());
+            holder.textView.setText(jsonObj.getString("designName"));
+            Log.d(TAG, "Populate the text position: " + String.valueOf(position) + "\t val: " + jsonObj.getString("designName"));
+            JSON*/
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(OrderListToSend.size() > 0) {
+
+            String testMail = "<p><b>Some Content</b></p>" + "<small><p>More content</p></small>";
+
+
+            sendMail.sendMail(toEmailAddress, "Your order on Le Pape store", orderDetails);//orderDetails);
+            startActivity(new Intent(this, MainActivity.class));
+            Toast.makeText(this, "Order placed.", Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(this, "Nothing to order.", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -229,12 +304,18 @@ public class Checkout extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed(){
+        super.onBackPressed();
+        if(!MainActivity.cartNewOrder.checkIfDesignIsSelected()){
+            startActivity(new Intent(this, Designs.class));
+        }
     }
 }

@@ -5,9 +5,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$PlaceholderFragment"
-    android:background="@drawable/homebackground"
+    android:background="#ffe5f1"
     android:backgroundTintMode="add">
-<!-- "#ffcf5b" -->
+<!-- "#ffcf5b"
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,5 +19,56 @@
         android:background="#ffcf5b"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
+        -->
+
+    <RelativeLayout
+        android:layout_marginTop="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:clickable="true"
+        android:background="@drawable/buttonstrokeshape"
+        android:layout_centerHorizontal="true"
+        android:onClick="showDesign"
+        android:id="@+id/relativeLayout">
+
+        <Button
+            android:onClick="showDesign"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:duplicateParentState="true"
+            android:layout_width="wrap_content"
+            android:text="Create dress"
+            android:textSize="15sp"
+            android:id="@+id/btn"
+            android:textColor="@android:color/holo_orange_dark"
+            android:background="@null"
+            android:drawablePadding="6dp"
+            android:drawableLeft="@drawable/g_y_add_dress"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:layout_height="64dp" />
+
+        <!--android:drawableRight="@android:drawable/ic_input_add"-->
+    </RelativeLayout>
+
+<!---
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:background="@null"
+        android:text="Create dress"
+        android:layout_centerHorizontal="true" /> -->
+<!--    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageViewPica"
+        android:layout_marginTop="74dp" />-->
 
 </RelativeLayout>

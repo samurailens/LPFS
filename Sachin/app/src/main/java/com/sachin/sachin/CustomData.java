@@ -8,13 +8,13 @@ import android.util.Log;
 
 /** This is just a simple class for holding data that is used to render our custom view */
 public class CustomData {
-    private int mBackgroundColor;
+    private String mBackgroundColor;
     private String mText;
     private double mcost;
 
     String TAG = "CustomData";
-    public CustomData(int backgroundColor, String text, double cost) {
-        mBackgroundColor = backgroundColor;
+    public CustomData(String itemName, String text, double cost) {
+        mBackgroundColor = itemName;
         mText = text;
         mcost = cost;
     }
@@ -22,7 +22,7 @@ public class CustomData {
     /**
      * @return the backgroundColor
      */
-    public int getBackgroundColor() {
+    public String getBackgroundColor() {
         Log.d(TAG, String.valueOf(mBackgroundColor));
         return mBackgroundColor;
     }
@@ -47,7 +47,7 @@ public class CustomData {
     /**
      * @set the background border
      */
-    public void setBackgroundBorder(int border ){
-        mBackgroundColor = border;
-    }
+    //public void setBackgroundBorder(int border ){
+      //  mBackgroundColor = border;
+    //}
 }

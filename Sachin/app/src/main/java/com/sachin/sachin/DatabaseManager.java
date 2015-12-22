@@ -4,13 +4,10 @@ package com.sachin.sachin;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.DatabaseUtils;
 import android.util.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -217,7 +214,12 @@ Log.d(TAG, "onCreate");
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
-            array_list.add(res.getString(res.getColumnIndex(ORDERS_COLUMN_ORDER)));
+            String s = res.getString(res.getColumnIndex(ORDERS_COLUMN_ORDERSTATUS));
+            if(s.equalsIgnoreCase("PAYMENT_PROGRESS")){//String.valueOf(ORDER_STATUS.FABRIC_SELECTION_IN_PROGRESS
+                //array_list.add(s);
+                array_list.add(res.getString(res.getColumnIndex(ORDERS_COLUMN_ORDER)));
+            }
+            //array_list.add(res.getString(res.getColumnIndex(ORDERS_COLUMN_ORDER)));
             res.moveToNext();
         }
         return array_list;
@@ -233,7 +235,10 @@ Log.d(TAG, "onCreate");
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
-            array_list.add(res.getString(res.getColumnIndex(ORDERS_COLUMN_ID)));
+            String s = res.getString(res.getColumnIndex(ORDERS_COLUMN_ORDERSTATUS));
+            if(s.equalsIgnoreCase("PAYMENT_PROGRESS")) {
+                array_list.add(res.getString(res.getColumnIndex(ORDERS_COLUMN_ID)));
+            }
             res.moveToNext();
         }
         return array_list;

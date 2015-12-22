@@ -83,27 +83,29 @@
                 android:textStyle="bold" />
 
             <ImageView
-                android:layout_width="213dp"
-                android:layout_height="wrap_content"
+                android:maxHeight="150dp"
+                android:maxWidth="150dp"
+
+
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_marginTop="5dp"
-                android:background="@android:color/holo_blue_dark"
-                android:layout_weight="0.66"
+                android:background="#ffeefe"
+
                 android:layout_gravity="center_horizontal"
                 android:id="@+id/previewImageview"/>
 
+            <TextView
+                android:id="@+id/selectedItemDescriptiontxtview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="@color/material_grey_300"
+                android:elegantTextHeight="true"
+                android:text="Description "
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:padding="5dp" />
 
-
-                <TextView
-
-                    android:id="@+id/selectedItemDescriptiontxtview"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:backgroundTint="@color/material_grey_300"
-                    android:elegantTextHeight="true"
-                    android:text="Content Description is shown here"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:padding="5dp" />
             <LinearLayout
                 android:weightSum="2"
                 android:layout_width="match_parent"
@@ -136,7 +138,7 @@
                     android:clickable="true"
                     android:onClick="addtocart"
                     android:text="Select"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:layout_gravity="right"
                     android:textColor="#ff7009"
                     android:backgroundTint="#dcddd1" />

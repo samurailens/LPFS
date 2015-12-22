@@ -13,15 +13,30 @@
         android:layout_marginLeft="15dp" />
 
     <Button
+        android:background="@null"
         android:id="@+id/getordersbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="MycartView"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/order_summary_text"
-        android:layout_marginBottom="64dp"
-        android:text="completed orders" />
+        android:text="completed orders"
+        android:layout_below="@+id/order_summary_text"
+        android:textColor="#ff4081"
+        android:layout_alignStart="@+id/order_summary_text" />
 
+    <ListView
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/getordersbtn"
+        android:id="@+id/orderlist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="15dp">
+
+
+    </ListView>
     <!-- REad from database and populate here -->
     <ListView
         android:layout_width="match_parent"

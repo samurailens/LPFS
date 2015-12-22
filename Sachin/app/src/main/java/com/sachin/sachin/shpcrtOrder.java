@@ -14,7 +14,7 @@ enum ORDER_STATUS {
     FABRIC_SELECTION_IN_PROGRESS,
     MEASUREMENTS_PROGRESS,
     PAYMENT_PROGRESS,
-    ADDRESS_FILLED,
+    ORDER_PLACED_TO_STORE,
     ORDER_COMPLETE
 }
 
@@ -64,7 +64,7 @@ public class shpcrtOrder {
         //update only that.
         //Can be done either on Thread or on Main thread.
         //dataClicked.getText() + "\n" + String.valueOf(dataClicked.getCost()
-        Designs.selectedItemDescription.setText("This is " + order_designComponent.getDesignName() + ". It requires " +  String.valueOf(order_designComponent.getDesignLenReq()) + " of fabric. " );
+        //Designs.selectedItemDescription.setText("This is " + order_designComponent.getDesignName() + ". It requires " +  String.valueOf(order_designComponent.getDesignLenReq()) + " of fabric. " );
         //Designs.cartTextView.setText( "Cart(0)"); //order_designComponent.getDesignName() + "\n" + order_designComponent.getDesignCost());
     }
 
@@ -107,14 +107,14 @@ public class shpcrtOrder {
             //After user selects, update all the fields.
         }
 
-        order_complete_status = ORDER_STATUS.ADDRESS_FILLED;
+        order_complete_status = ORDER_STATUS.ORDER_PLACED_TO_STORE;
 
     }
 
     boolean processOrder(){
 
         boolean status = false;
-        if( order_complete_status.equals(ORDER_STATUS.ADDRESS_FILLED)){
+        if( order_complete_status.equals(ORDER_STATUS.ORDER_PLACED_TO_STORE)){
             //Store in DB
 
 
@@ -177,5 +177,12 @@ public class shpcrtOrder {
         Log.d(TAG, order_designComponent.getDesignName() + neworder.toString());
 
         return neworder;
+    }
+
+    public void clear(){
+        order_designComponent = null;
+        order_fabricComponent = null;
+        order_designComponent = new shpcrtDesign();
+        order_fabricComponent = new shpcrtFabric();
     }
 }

@@ -1,8 +1,7 @@
 package com.sachin.sachin;
 
-import android.app.Activity;
 import android.app.ListActivity;
-import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -10,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +27,16 @@ public class ShoppingCart extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shopping_cart);
+
+//        int titleId = getResources().getIdentifier("action_bar_title", "id",
+//                "android");
+//        TextView yourTextView = (TextView) findViewById(titleId);
+        //yourTextView.setTextColor(getResources().getColor(R.color.black));
+        TextView txtView = (TextView)   findViewById(R.id.shoppingcarttextview);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "RobotoCondensed-Regular.ttf");
+        txtView.setTypeface(typeface);
+        //yourTextView.setTypeface(typeface);
+
         updateCart();
     }
 

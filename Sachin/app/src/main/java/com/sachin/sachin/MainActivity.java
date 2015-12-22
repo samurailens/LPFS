@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -22,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +37,13 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-public class MainActivity extends Activity
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends  Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks ,
 
         ActivityCompat.OnRequestPermissionsResultCallback,
@@ -80,10 +89,15 @@ public class MainActivity extends Activity
     static private boolean mShouldResolve = false;
     // [END resolution_variables]
 
+    static public String activeUserEmail = "";
+
     static Bundle savedInstanceStateFromFragment = null;
 
     static SignInButton signInButton = null;
 
+    static Context context;
+
+    static boolean signin4Firsttime = true;
     //~Sign in
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +125,8 @@ public class MainActivity extends Activity
                 .addScope(new Scope(Scopes.EMAIL))
                 .build();
 
-
+        context = this;
+        //imageViewPica
 
     }
 
@@ -142,9 +157,48 @@ public class MainActivity extends Activity
     }
 
     public void MycartView(View v){
-        Intent i = new Intent(this, ShoppingCart.class);
-        startActivity(i);
+        //Intent i = new Intent(this, ShoppingCart.class);
+        //startActivity(i);
+        updateCart();
     }
+
+    public void updateCart(){
+
+        int size = MainActivity.mydbmanager.getAllOrders().size();
+
+        List list = MainActivity.mydbmanager.getAllOrders() ;
+        ArrayAdapter myAdapter;
+
+        List<String> listTitle = new ArrayList<String>();
+
+        if(list.size() > 0 ) {
+            for (int i = 0; i < list.size(); i++) {
+
+                Log.d(TAG, list.get(i).toString());
+                try {
+                    JSONObject jsonObj = new JSONObject(list.get(i).toString());
+                    //listTitle.add(i, jsonObj.toString());
+                    listTitle.add(jsonObj.toString());
+                    Log.d(TAG, "Add " + jsonObj.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }else {
+            Log.d(TAG,"list size is zero ");
+        }
+        myAdapter = new shoppingCartCustomArrayAdapter(this, listTitle);
+        //myAdapter = new ArrayAdapter(this, R.layout.row_layout, R.id.listText, listTitle);
+        //orderlist
+        ListView listView = (ListView)  findViewById(R.id.orderlist);
+        listView.setAdapter(myAdapter);
+
+        //myAdapter = new ArrayAdapter(this, R.layout.row_layout, R.id.listText, listTitle);
+        //getListView().setOnItemClickListener(this);
+        //setListAdapter(myAdapter);
+
+    }
+
 
     public void deleteFromCart(View v){
 
@@ -157,6 +211,7 @@ public class MainActivity extends Activity
             case 0:
                 mTitle = "Store Home";
                 Log.d(TAG, "case Home  ");
+
                 break;
             case 1:
                 mTitle = getString(R.string.title_section1);
@@ -278,6 +333,12 @@ public class MainActivity extends Activity
 
     private void updateUI(boolean isSignedIn) {
         Log.d(TAG, "updateUI -->");
+
+        //check if the ui is actually visible
+        //Sign in ui is visible only in one screen
+        if(mTitle.toString().contains("Login")){
+        Log.d(TAG, "Login screen available");
+
         if (isSignedIn) {
             Person currentPerson = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
             if (currentPerson != null) {
@@ -285,10 +346,12 @@ public class MainActivity extends Activity
                 String name = currentPerson.getDisplayName();
                 mStatus.setText(getString(R.string.signed_in_fmt, name));
 
+
                 // Show users' email address (which requires GET_ACCOUNTS permission)
                 if (checkAccountsPermission()) {
                     String currentAccount = Plus.AccountApi.getAccountName(mGoogleApiClient);
-                    ((TextView) findViewById(R.id.email)).setText(currentAccount);
+                    // Email Form ((TextView) findViewById(R.id.email)).setText(currentAccount);
+                    activeUserEmail = currentAccount;
                 }
             } else {
                 // If getCurrentPerson returns null there is generally some error with the
@@ -303,7 +366,7 @@ public class MainActivity extends Activity
         } else {
             // Show signed-out message and clear email field
             mStatus.setText(R.string.signed_out);
-            ((TextView) findViewById(R.id.email)).setText("");
+            //Email Form ((TextView) findViewById(R.id.email)).setText("");
 
             // Set button visibility
             findViewById(R.id.plus_sign_in_button).setEnabled(true);
@@ -311,6 +374,7 @@ public class MainActivity extends Activity
             findViewById(R.id.plus_sign_out_buttons).setVisibility(View.GONE);
         }
 
+        }
         Log.d(TAG, "updateUI <--");
     }
 
@@ -430,6 +494,26 @@ public class MainActivity extends Activity
 
         // Show the signed-in UI
         showSignedInUI();
+
+//        if ( signin4Firsttime ) {
+//            signin4Firsttime = false;
+//            final Handler handler = new Handler();
+//
+//            final Runnable r = new Runnable() {
+//                public void run() {
+//
+//                    handler.postDelayed(this, 2000);
+//                    onNavigationDrawerItemSelected(0);
+//                }
+//            };
+//
+//            handler.postDelayed(r, 2000);
+//
+//
+//        }
+
+        //Go to store home
+
         Log.d(TAG, "onConnected <--");
     }
     // [END on_connected]
@@ -451,6 +535,7 @@ public class MainActivity extends Activity
         // ConnectionResult to see possible error codes.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
 
+        signin4Firsttime = false;
         /*
         int code = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
 
@@ -572,6 +657,7 @@ public class MainActivity extends Activity
         }
 
         showSignedOutUI();
+        signin4Firsttime = false;
         Log.d(TAG, "onDisconnectClicked <--");
     }
 
@@ -638,6 +724,8 @@ public class MainActivity extends Activity
                 case 0:
                     Log.d(TAG, "case 0 selected ");
                     rootView = inflater.inflate(R.layout.fragment_home, container, false);
+                    //ImageView imageView = (ImageView)rootView.findViewById(R.id.imageViewPica);
+                    //Picasso.with(MainActivity.context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
                     break;
                 case 1:
                     Log.d(TAG, "case 1 selected ");

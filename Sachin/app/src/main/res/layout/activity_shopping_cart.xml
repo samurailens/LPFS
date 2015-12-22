@@ -6,7 +6,9 @@
     tools:context="com.sachin.sachin.ShoppingCart">
 
     <TextView android:text="Your cart details" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:id="@+id/shoppingcarttextview" />
 
     <ListView
         android:id="@android:id/list"
