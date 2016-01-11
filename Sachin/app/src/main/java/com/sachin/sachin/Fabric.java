@@ -12,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -94,7 +93,7 @@ public class Fabric extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(0, 0);
-        setContentView(R.layout.activity_fabric);
+        setContentView(R.layout.activity_fabric_newlayout);
         // Get references to UI widgets
         //mHlvSimpleList = (HorizontalListView) findViewById(R.id.hlvSimpleListfabric);
         mHlvCustomList = (HorizontalListView) findViewById(R.id.hlvCustomListfabric);
@@ -115,8 +114,8 @@ public class Fabric extends Activity {
         //selectedItemDescription.setText("Content Description is shown here");
         existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
         lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.setProgress(33);
+        //progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        //progressBar.setProgress(33);
         updateCartUI();
         Log.d(TAG, "OnCreate Complete");
     }
@@ -163,6 +162,7 @@ public class Fabric extends Activity {
                 String url = Designs.selectedDesignUrl; //"http://trycatchthrow.in/LPFS/images/designs/oneshoulderwaistline.png";
                 Picasso.with(MainActivity.context)
                         .load(url)
+                        .placeholder(R.drawable.flower7272)
                         .into(previewImageViewFabric);
 
                 int w = previewImageViewFabric.getWidth();
@@ -288,7 +288,7 @@ public class Fabric extends Activity {
 
     public void addtocart(View v){
         overridePendingTransition(0,0);
-        Button btnAddToCart = (Button) findViewById(R.id.addtocartbtn);
+        //Button btnAddToCart = (Button) findViewById(R.id.addtocartbtn);
         Date currentDate = new Date(System.currentTimeMillis());
         JSONObject neworder = MainActivity.cartNewOrder.getDetails();
 
@@ -299,10 +299,8 @@ public class Fabric extends Activity {
         if ( MainActivity.cartNewOrder.checkIfFabricIsSelected() ) {
             boolean isOrderinCart = isOrderAlreadyInCart();
             if(!isOrderinCart){
-
-                MainActivity.mydbmanager.insertOrder(neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.FABRIC_SELECTION_IN_PROGRESS));
+                MainActivity.mydbmanager.insertOrder(lastInsertedOrderId, neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.FABRIC_SELECTION_IN_PROGRESS));
                 existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
-                lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
                 Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId + "Status " + String.valueOf(ORDER_STATUS.FABRIC_SELECTION_IN_PROGRESS));
             }else {
                 updateExistingOrder();
@@ -310,36 +308,12 @@ public class Fabric extends Activity {
             }
             //Update cart size
             updateCartUI();
-            btnAddToCart.setText("Update Cart");
-            Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
-            progressBar.setProgress(66);
-        }else {
-            Toast.makeText(this, "Select a fabric", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void saveSelectedFabric(){
-        Date currentDate = new Date(System.currentTimeMillis());
-        JSONObject neworder = MainActivity.cartNewOrder.getDetails();
-        if ( MainActivity.cartNewOrder.checkIfFabricIsSelected() ) {
-            boolean isOrderinCart = isOrderAlreadyInCart();
-            if(!isOrderinCart){
-                MainActivity.mydbmanager.insertOrder(neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.FABRIC_SELECTION_IN_PROGRESS));
-                existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
-                lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
-                Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId);
-            }else {
-                updateExistingOrder();
-                Toast.makeText(Fabric.this, "Updated order.", Toast.LENGTH_SHORT).show();
-            }
-            //Update cart size
-            updateCartUI();
-
             Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
         }else {
             Toast.makeText(this, "Select a fabric", Toast.LENGTH_SHORT).show();
         }
     }
+
 
     public  void selectSize(View v){
         overridePendingTransition(0, 0);
@@ -359,20 +333,15 @@ public class Fabric extends Activity {
         }
     }
     private void updateCartUI(){
-        //MainActivity.cartNewOrder.updateCart(MainActivity.mydbmanager.getAllOrders().size());
-        int i = 0 ;//MainActivity.mydbmanager.getAllOrders().size();
-        //cartTextView.setText("Cart(" + String.valueOf(i) + ")");
+        int i = 0 ;
         i = MainActivity.mydbmanager.getOrderWithDNFSelected();
         cartTextView.setText("Cart(" + String.valueOf(i) + ")");
         Log.d(TAG, "Cart items " + String.valueOf(i));
     }
 
     private void updateExistingOrder(){
-        int i = Integer.parseInt(lastInsertedOrderId);
-        if( i > 0) {
-            MainActivity.mydbmanager.updateOrderDetails(MainActivity.cartNewOrder.getDetails().toString(),i );
-            MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.FABRIC_SELECTION_IN_PROGRESS), i);
-        }
+        MainActivity.mydbmanager.updateOrderDetails(MainActivity.cartNewOrder.getDetails().toString(),lastInsertedOrderId );
+        MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.FABRIC_SELECTION_IN_PROGRESS), lastInsertedOrderId);
         updateCartUI();
     }
 
@@ -385,10 +354,10 @@ public class Fabric extends Activity {
 
         if(!isNewOrderpresentInExistingOrders){
             //Order not in Cart. Check any new Order added this session.
-            int i = Integer.parseInt(lastInsertedOrderId);
-            if( i > 0){
+
+            if( !lastInsertedOrderId.isEmpty()){
                 //There was an order added in this session, update same order
-                Log.d(TAG, "isOrderAlreadyInCart i="+String.valueOf(i));
+                Log.d(TAG, "isOrderAlreadyInCart i="+ lastInsertedOrderId);
                 return true;
             }
 

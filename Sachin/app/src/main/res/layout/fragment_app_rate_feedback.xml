@@ -24,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Submit"
+        android:onClick="rateApp"
         android:id="@+id/ratebtn"
         android:layout_marginTop="144dp"
         android:layout_below="@+id/ratingBar"
@@ -42,5 +43,16 @@
         android:hint="Comments"
         android:inputType="textAutoCorrect|text|textMultiLine" />
 
+
+    <TextView
+        android:id="@+id/thankyouNote"
+        android:layout_below="@+id/rate_title"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Thank you for your feedback!"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:padding="@dimen/activity_horizontal_margin"/>
 
 </RelativeLayout>

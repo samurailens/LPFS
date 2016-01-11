@@ -1,0 +1,172 @@
+<RelativeLayout
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="2"
+    >
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view_create_dress"
+        android:layout_gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        card_view:cardCornerRadius="2dp"
+        card_view:contentPadding="5dp"
+        android:layout_marginTop="60dp">
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true">
+
+            <ImageView
+                android:background="@drawable/g_y_add_dress"
+                android:id="@+id/CVimageview1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:contentDescription="This is imageView" />
+
+            <TextView
+                android:id="@+id/CVtextViewForOrderID"
+                android:text="Order ID #123456 "
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/CVimageview1" />
+
+            <LinearLayout
+                android:id="@+id/CVtextViewDesign"
+                android:layout_below="@+id/CVtextViewForOrderID"
+                android:layout_toRightOf="@+id/CVimageview1"
+                android:weightSum="1"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_weight="0.8"
+                    android:text="Neck pattern"
+                    android:id="@+id/CVLinLayoutDesignName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="10dp" />
+                <TextView
+                    android:text="Rs 240, 1.2m"
+                    android:layout_weight="0.2"
+                    android:id="@+id/CVLinLayoutDesignLenReq"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/CVtextViewFabric"
+                android:layout_below="@+id/CVtextViewDesign"
+                android:layout_toRightOf="@+id/CVimageview1"
+                android:weightSum="1"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_weight="0.8"
+                    android:layout_toRightOf="@+id/CVimageview1"
+                    android:id="@+id/CVtextViewFabricName"
+                    android:text="Pattern Pattern"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginLeft="10dp"
+                    />
+
+                <TextView
+                    android:id="@+id/CVtextViewFabricCost"
+
+                    android:layout_weight="0.2"
+                    android:text="Rs 200"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_below="@+id/CVtextViewFabric"
+                android:layout_toRightOf="@+id/CVimageview1"
+                android:id="@+id/CVtextViewTotalCost"
+                android:textSize="16sp"
+                android:text="Total : Rs 250"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:text="Size M"
+                android:layout_below="@+id/CVtextViewFabric"
+                android:layout_toRightOf="@+id/CVtextViewTotalCost"
+                android:layout_alignBaseline="@+id/CVtextViewTotalCost"
+                android:layout_marginLeft="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/CVtextViewSize"/>
+
+            <TextView
+                android:background="@null"
+                android:clickable="true"
+
+                android:text="REMOVE"
+                android:layout_alignBaseline="@+id/CVtextViewTotalCost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="false"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="28dp"
+
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="false"
+                android:id="@+id/textviewRemove"
+                android:layout_alignParentTop="false"
+                android:textColor="#ff0c1e" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+<!--
+    <TextView
+        android:id="@+id/listText"
+        android:layout_weight="1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="55dp" />
+    <TextView
+        android:layout_weight="0.5"
+        android:id="@+id/ordercost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_weight="0.5"
+        android:id="@+id/deletebtn"
+        android:text="delete"
+        android:gravity="right"
+        android:paddingRight="15dp"
+        android:textColor="@android:color/holo_red_light"
+        android:onClick="deleteFromCart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="gravity" />
+-->
+</RelativeLayout>

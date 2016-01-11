@@ -68,6 +68,7 @@ public class CustomArrayAdapter extends ArrayAdapter<CustomData> {
                 .centerCrop()
                 .into(holder.imageView);*/
             holder.imageView = (ImageView) convertView.findViewById(R.id.imgviewforPicasso);
+            holder.textView = (TextView) convertView.findViewById(R.id.textViewForImage);
             convertView.setTag(holder);
 
 
@@ -81,6 +82,8 @@ public class CustomArrayAdapter extends ArrayAdapter<CustomData> {
         Picasso.with(getContext())
                 .load(url)
                 .into(holder.imageView);
+
+        holder.textView.setText(getItem(position).getBackgroundColor() +"\nRs."+getItem(position).getCost());
         //Picasso.with(MainActivity.context).load("http://i.imgur.com/DvpvklR.png").into(holder.imageView);
         //holder.imageView.setImageURI(Uri.parse(url));
         //Log.d(TAG, "Populate the text position: " + String.valueOf(position) + "\t val: " + getItem(position).getText());

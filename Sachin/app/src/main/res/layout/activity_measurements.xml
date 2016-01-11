@@ -73,7 +73,8 @@
                 android:layout_height="wrap_content"
                 android:text="Select Measurements"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_marginTop="10dp" />
+                android:layout_marginTop="10dp"
+                android:visibility="gone" />
 
 
             <RelativeLayout
@@ -86,7 +87,8 @@
                 android:layout_width="fill_parent"
                 android:visibility="visible"
                 android:id="@+id/sizeMeasuremenstslistView"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp">
 
                 <Button
                     android:layout_width="60dp"

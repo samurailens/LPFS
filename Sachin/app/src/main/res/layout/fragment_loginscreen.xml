@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+
+        android:layout_weight="0.4"
+        android:background="#ffe5f1">
+
+
+
+        <ImageView
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+
+            android:id="@+id/LogoLoginForm"
+            android:src="@drawable/logo3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="25dp"
+            android:maxHeight="25dp"
+            android:minHeight="25dp"
+            android:minWidth="25dp"
+            android:layout_marginBottom="15dp"
+            android:padding="05dp" />
+<!--
+        <TextView
+            android:id="@+id/App_Title"
+            android:text="Le Pape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="45sp"
+            android:textAlignment="center"
+            android:textStyle="italic"
+            android:typeface="serif"
+           />
+           -->
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#ffe5f1"
+        android:layout_weight="0.6">
+
+
+        <ScrollView
+            android:padding="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="10dp"
+            android:id="@+id/login_form" android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="1">
+
+                <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="vertical">
+
+                    <AutoCompleteTextView android:id="@+id/email" android:layout_width="match_parent"
+                        android:background="#fefff3"
+                        android:layout_height="wrap_content" android:hint="@string/prompt_email"
+                        android:inputType="textEmailAddress" android:maxLines="1"
+                        android:singleLine="true"
+                        android:padding="2dp"
+                        android:drawableLeft="@drawable/username36"/>
+
+                    <EditText android:id="@+id/password" android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:hint="@string/prompt_password"
+                        android:background="#fefff3"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:imeOptions="actionUnspecified" android:inputType="textPassword"
+                        android:maxLines="1" android:singleLine="true"
+                        android:layout_marginTop="@dimen/activity_horizontal_margin"
+                        android:padding="2dp"
+                        android:drawableLeft="@drawable/password36"/>
+
+                    <Button android:id="@+id/email_sign_in_button"
+
+                        android:background="#ff9d24"
+                        android:textColor="@android:color/white"
+                        android:onClick="manualSignInOrRegister"
+                        android:layout_width="match_parent" android:layout_height="35dp"
+                        android:layout_marginTop="10dp" android:text="@string/action_sign_in"
+                        android:textStyle="normal" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_marginTop="05dp"
+                    android:layout_marginBottom="05dp"
+                    android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/signed_out"
+                    android:textColor="@android:color/black"
+                    android:textSize="10sp"
+                    android:visibility="gone"/>
+
+
+
+                <com.google.android.gms.common.SignInButton android:id="@+id/plus_sign_in_button"
+                    android:layout_width="match_parent" android:layout_height="40dp"
+                    android:layout_marginTop="5dp"
+                    style="@style/GoogleLoginButton"
+                    android:textAlignment="viewStart" />
+
+                <com.facebook.login.widget.LoginButton
+                    xmlns:fb="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/login_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    style="@style/FacebookLoginButton" />
+
+
+                <!--- Show Design and order buttons start -->
+                <RelativeLayout
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/MenuList"
+                    android:visibility="gone"
+                    android:layout_alignParentLeft="false">
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/card_view_create_dress"
+                        android:layout_gravity="center"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        card_view:cardCornerRadius="2dp"
+                        card_view:contentPadding="10dp"
+                        android:layout_marginTop="60dp">
+
+                        <RelativeLayout
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:onClick="showDesign"
+
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:clickable="true">
+
+                            <ImageView
+                                android:background="@drawable/createdress3636"
+                                android:id="@+id/CVimageview1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:contentDescription="This is imageView" />
+
+                            <TextView
+                                android:id="@+id/CVtextView2"
+                                android:text="Create your dress"
+                                android:textStyle="bold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@+id/CVimageview1" />
+                            <TextView
+                                android:layout_below="@+id/CVtextView2"
+                                android:layout_toRightOf="@+id/CVimageview1"
+                                android:id="@+id/textView3"
+                                android:text="Designs, exclusively created for you"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginLeft="10dp" />
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/card_view_check_orders"
+                        android:layout_below="@+id/card_view_create_dress"
+                        android:layout_gravity="center"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        card_view:cardCornerRadius="2dp"
+                        card_view:contentPadding="10dp"
+                        android:layout_marginTop="60dp">
+
+                        <RelativeLayout
+                            xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:tools="http://schemas.android.com/tools"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:clickable="true"
+                            android:onClick="showShoppingCart">
+
+                            <ImageView
+                                android:background="@drawable/reorder"
+                                android:id="@+id/CV2imageview"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:contentDescription="This is imageView" />
+
+                            <TextView
+                                android:id="@+id/CV2textView2"
+                                android:text="Your orders"
+                                android:textStyle="bold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_toRightOf="@+id/CV2imageview" />
+                            <TextView
+                                android:layout_below="@+id/CV2textView2"
+                                android:layout_toRightOf="@+id/CV2imageview"
+                                android:id="@+id/CV2textView3"
+                                android:text="Track your past orders"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:layout_marginLeft="10dp" />
+                        </RelativeLayout>
+                    </android.support.v7.widget.CardView>
+
+
+                </RelativeLayout>
+
+                <!--- Show Design and order buttons end -->
+
+                <LinearLayout android:id="@+id/plus_sign_out_buttons"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:visibility="gone" android:weightSum="2"
+                    android:gravity="center|bottom"
+                    android:layout_marginTop="15dp">
+
+                    <Button android:id="@+id/plus_sign_out_button" style="?android:textAppearanceSmall"
+                        android:layout_width="match_parent" android:layout_height="match_parent"
+                        android:gravity="center|bottom"
+                        android:layout_weight="1" android:text="@string/plus_sign_out" />
+
+                    <Button android:id="@+id/plus_disconnect_button"
+                        style="?android:textAppearanceSmall" android:layout_width="match_parent"
+                        android:gravity="center|bottom"
+                        android:layout_height="match_parent" android:layout_weight="1"
+
+                        android:text="@string/plus_disconnect" />
+
+                </LinearLayout>
+
+
+
+
+
+
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Skip"
+            android:id="@+id/textViewSkip"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-15dp"
+            android:layout_marginBottom="20dp"
+            android:onClick="skipLogin" />
+
+
+    </RelativeLayout>
+
+
+</LinearLayout>

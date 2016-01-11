@@ -1,7 +1,7 @@
 package com.sachin.sachin;
 
 import android.Manifest;
-import android.app.ActionBar;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -9,13 +9,18 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.method.LinkMovementMethod;
 import android.transition.Fade;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,10 +29,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.Scopes;
@@ -41,7 +61,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static android.support.v7.app.ActionBar.NAVIGATION_MODE_STANDARD;
 
 public class MainActivity extends  Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks ,
@@ -98,11 +121,69 @@ public class MainActivity extends  Activity
     static Context context;
 
     static boolean signin4Firsttime = true;
+
+    static boolean netAvailability ;
+
+    public static final String LePapePreferences = "LePapePreferences" ;
+    public static String LePapePreferences_EMAIL = "";
+    public static String LePapePreferences_PASSWORD = "";
+
+    public static LoginButton loginButton ;
+    CallbackManager callbackManager;
     //~Sign in
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
         setContentView(R.layout.activity_main);
+
+        //FB
+        callbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        // App code
+                        Log.d(TAG , "Login ok");
+
+                        GraphRequest request = GraphRequest.newMeRequest(
+                                loginResult.getAccessToken(),
+                                new GraphRequest.GraphJSONObjectCallback() {
+                                    @Override
+                                    public void onCompleted(
+                                            JSONObject object,
+                                            GraphResponse response) {
+                                        // Application code
+                                        Log.v("LoginActivity", response.toString());
+
+                                    }
+                                });
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id,name,email,gender, birthday");
+                        request.setParameters(parameters);
+                        request.executeAsync();
+
+                        //Log.d(TAG, request.getGraphObject().toString() );
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                        Log.d(TAG , "Login onCancel");
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                        Log.d(TAG , "Login onError");
+                    }
+                });
+
+
+        //~FB
 
         savedInstanceStateFromFragment = savedInstanceState;
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -117,18 +198,20 @@ public class MainActivity extends  Activity
 
         // set an exit transition
         getWindow().setExitTransition(new Fade());
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(new Scope(Scopes.PROFILE))
-                .addScope(new Scope(Scopes.EMAIL))
-                .build();
+        netAvailability =  isNetworkAvailable();
 
+
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(Plus.API)
+                    .addScope(new Scope(Scopes.PROFILE))
+                    .addScope(new Scope(Scopes.EMAIL))
+                    .build();
         context = this;
-        //imageViewPica
-
+        Log.d(TAG, "Network status  "+String.valueOf(netAvailability));
     }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -145,20 +228,30 @@ public class MainActivity extends  Activity
                 .replace(R.id.container, PlaceholderFragment.newInstance(position))
                 .commit();
 
-
-
-
         if(mTitle!=null){
            if(loginSelected > 0 )  {
+                loginSelected = -1;
                 callOnCreateOfView(savedInstanceStateFromFragment);
             }
         }
 
     }
 
+    public void skipLogin(View v){
+        //Hide all the sign in and show order
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.email_login_form);
+        SignInButton signInButton = (SignInButton) findViewById(R.id.plus_sign_in_button);
+        LoginButton linearLayout1 = (LoginButton) findViewById(R.id.login_button);
+
+        linearLayout.setVisibility(View.GONE);
+        signInButton.setVisibility(View.GONE);
+        linearLayout1.setVisibility(View.GONE);
+
+        RelativeLayout relativeLayout = (RelativeLayout)findViewById(R.id.MenuList);
+        relativeLayout.setVisibility(View.VISIBLE);
+
+    }
     public void MycartView(View v){
-        //Intent i = new Intent(this, ShoppingCart.class);
-        //startActivity(i);
         updateCart();
     }
 
@@ -206,7 +299,7 @@ public class MainActivity extends  Activity
 
     public void onSectionAttached(int number) {
         Log.d(TAG, "onSectionAttached");
-        loginSelected = 0;
+
         switch (number) {
             case 0:
                 mTitle = "Store Home";
@@ -240,13 +333,49 @@ public class MainActivity extends  Activity
     }
 
     public void restoreActionBar() {
-        Log.d(TAG, "restoreActionBar" );
-        ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        Log.d(TAG, "restoreActionBar");
+        android.app.ActionBar actionBar = getActionBar();
+        actionBar.setNavigationMode(NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
+        //actionBar.set
+
+//        this.getActionBar().setDisplayShowCustomEnabled(true);
+//        this.getActionBar().setDisplayShowTitleEnabled(false);
+//
+//        LayoutInflater inflator = LayoutInflater.from(this);
+//        View v = inflator.inflate(R.layout.titleview, null);
+//
+////if you need to customize anything else about the text, do it here.
+////I'm using a custom TextView with a custom font in my layout xml so all I need to do is set title
+//        ((TextView)v.findViewById(R.id.title)).setText(mTitle);
+//
+////assign the view to the actionbar
+//        this.getActionBar().setCustomView(v);
+
+        /*
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "Roboto-Black.ttf");
+//        txtView.setTypeface(typeface);
+//        txtView.setTextSize(24);
+        int titleId = getResources().getIdentifier("action_bar_title", "id","android");
+        TextView yourTextView = (TextView) findViewById(titleId);
+        //yourTextView.setTextColor(getResources().getColor(R.color.black));
+        yourTextView.setTypeface(typeface);
+        */
+
     }
 
+    public boolean isNetworkAvailable(){
+        boolean ret = false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        if(networkInfo==null)
+                return ret;
+
+        NetworkInfo.State network = networkInfo.getState();
+        return (network == NetworkInfo.State.CONNECTED || network == NetworkInfo.State.CONNECTING);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -254,7 +383,7 @@ public class MainActivity extends  Activity
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
+            //getMenuInflater().inflate(R.menu.main, menu);
             restoreActionBar();
             if(mTitle!=null && mTitle.toString().contains("Login")){
                callOnCreateOfView(savedInstanceStateFromFragment);
@@ -285,7 +414,11 @@ public class MainActivity extends  Activity
 
     public void showDesign(View v){
 
-        startActivity(new Intent(this, Designs.class));
+        if(netAvailability) {
+            startActivity(new Intent(this, Designs.class));
+        }else {
+            Toast.makeText(this,"No Internet Connection.", Toast.LENGTH_LONG).show();
+        }
     }
 
     //Sign in Related
@@ -352,6 +485,8 @@ public class MainActivity extends  Activity
                     String currentAccount = Plus.AccountApi.getAccountName(mGoogleApiClient);
                     // Email Form ((TextView) findViewById(R.id.email)).setText(currentAccount);
                     activeUserEmail = currentAccount;
+                    //onNavigationDrawerItemSelected(0);
+                    showUIafterLogin(name);
                 }
             } else {
                 // If getCurrentPerson returns null there is generally some error with the
@@ -372,13 +507,94 @@ public class MainActivity extends  Activity
             findViewById(R.id.plus_sign_in_button).setEnabled(true);
             findViewById(R.id.plus_sign_in_button).setVisibility(View.VISIBLE);
             findViewById(R.id.plus_sign_out_buttons).setVisibility(View.GONE);
+
+            showUIAfterSignOut();
         }
 
         }
         Log.d(TAG, "updateUI <--");
     }
 
+    public void showUIafterLogin(String currentPersonName){
+        //1. Hide the email , password and registration button.
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.email_login_form);
+        linearLayout.setVisibility(View.GONE);
+        //2. Show Welcome message
+        TextView statusTxtView = (TextView) findViewById(R.id.status );
+        statusTxtView.setText("Hi " + currentPersonName + ",");
+        statusTxtView.setTextSize(18);
+        statusTxtView.setVisibility(View.VISIBLE);
+        //3. Show total number of items in cart.
 
+        int size = MainActivity.mydbmanager.getAllOrders().size();
+        //4. Show Sign out button
+
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.MenuList);
+        relativeLayout.setVisibility(View.VISIBLE);
+
+        TextView textView = (TextView) findViewById(R.id.textViewSkip);
+        textView.setVisibility(View.GONE);
+
+        LoginButton  linearLayout1 = (LoginButton ) findViewById(R.id.login_button);
+        linearLayout1.setVisibility(View.GONE);
+    }
+
+    private void showUIAfterSignOut(){
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.email_login_form);
+        linearLayout.setVisibility(View.VISIBLE);
+
+        TextView statusTxtView = (TextView) findViewById(R.id.status );
+        statusTxtView.setText("");
+        statusTxtView.setTextSize(2);
+        statusTxtView.setVisibility(View.GONE);
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.MenuList);
+        relativeLayout.setVisibility(View.GONE);
+
+        TextView textView = (TextView) findViewById(R.id.textViewSkip);
+        textView.setVisibility(View.VISIBLE);
+        LoginButton  linearLayout1 = (LoginButton ) findViewById(R.id.login_button);
+        linearLayout1.setVisibility(View.VISIBLE);
+    }
+
+    public void manualSignInOrRegister(View v){
+        EditText editTextEmail =  (EditText) findViewById(R.id.email);
+        EditText editTextPassword = (EditText) findViewById(R.id.password);
+
+        String email = editTextEmail.getText().toString();
+        String password = editTextPassword.getText().toString();
+
+        if(!email.isEmpty() && !password.isEmpty()){
+            SharedPreferences sharedpreferences = getSharedPreferences(LePapePreferences, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedpreferences.edit();
+
+            String existingEmail = sharedpreferences.getString(LePapePreferences_EMAIL, null);
+            String existingPassword = sharedpreferences.getString(LePapePreferences_PASSWORD, null);
+            if(existingEmail!=null && existingEmail.contains(email) ){
+                //already user exists, check if matches,
+                if(password.contains(existingPassword)){
+                    Toast.makeText(this,"Login success.", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this,"Incorrect credentials.", Toast.LENGTH_SHORT).show();
+                }
+
+            }else {
+                //else create a new user , overwrite last user
+                editor.putString(LePapePreferences_EMAIL, email);
+                editor.putString(LePapePreferences_PASSWORD, password);
+                editor.apply();
+                editor.commit();
+                showUIafterLogin(email);
+                Toast.makeText(this,"Successfully registered!", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            if(email.isEmpty()){
+                Toast.makeText(this,"Email cannot be empty.", Toast.LENGTH_SHORT).show();
+            }else if (password.isEmpty()){
+                Toast.makeText(this,"Password cannot be empty.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
     /**
      * Check if we have the GET_ACCOUNTS permission and request it if we do not.
      * @return true if we have the permission, false if we do not.
@@ -431,6 +647,7 @@ public class MainActivity extends  Activity
         super.onStart();
         Log.d(TAG, "onStart -->");
         //mGoogleApiClient.connect();
+        netAvailability = isNetworkAvailable();
         Log.d(TAG, "onStart <--");
     }
 
@@ -439,6 +656,7 @@ public class MainActivity extends  Activity
         super.onStop();
         Log.d(TAG, "onStop -->");
         //mGoogleApiClient.disconnect();
+        netAvailability = isNetworkAvailable();
         Log.d(TAG, "onStop <--");
     }
     // [END on_start_on_stop]
@@ -466,6 +684,8 @@ public class MainActivity extends  Activity
             mIsResolving = false;
             mGoogleApiClient.connect();
         }
+
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
     // [END on_activity_result]
     @Override
@@ -683,6 +903,56 @@ public class MainActivity extends  Activity
     // [END on_disconnect_clicked]
     //~Sign in Related
 
+    //Rate and Feedback
+    public void rateApp(View v){
+
+        SendMail sendMail = new SendMail();
+        String thankYouNote = "Thanks for your valuable feedback on Le Pape Android app.";
+        String toEmailAddress = MainActivity.activeUserEmail;
+
+        String feedback = "";
+        String ourMailAddress = "48.rohit@gmail.com";
+
+        EditText editText = (EditText ) findViewById(R.id.commentstxtview);
+        feedback = editText.getText().toString();
+
+        RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        float numberOfStars = ratingBar.getRating();
+
+        feedback = feedback + "Rating = " + String.valueOf(numberOfStars);
+
+        if( !toEmailAddress.contains("@")){
+            Toast.makeText(this, "Sign in to place your order", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, MainActivity.class));
+        }else {
+            sendMail.sendMail(toEmailAddress, "Le Pape - Feedback",thankYouNote );//orderDetails);
+            sendMail.sendMail(ourMailAddress, "Le Pape - Feedback",feedback );//orderDetails);
+        }
+
+        Button btn = (Button) findViewById(R.id.ratebtn);
+        btn.setVisibility(View.GONE);
+        ratingBar.setVisibility(View.GONE);
+        editText.setVisibility(View.GONE);
+
+        TextView txtViewThankYou = (TextView) findViewById(R.id.thankyouNote);
+        txtViewThankYou.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Logs 'install' and 'app activate' App Events.
+        AppEventsLogger.activateApp(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Logs 'app deactivate' App Event.
+        AppEventsLogger.deactivateApp(this);
+    }
 
     /**
      * A placeholder fragment containing a simple view.
@@ -726,10 +996,19 @@ public class MainActivity extends  Activity
                     rootView = inflater.inflate(R.layout.fragment_home, container, false);
                     //ImageView imageView = (ImageView)rootView.findViewById(R.id.imageViewPica);
                     //Picasso.with(MainActivity.context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+                    TextView txtView = (TextView)   rootView.findViewById(R.id.CVtextView2);
+                    Typeface typeface = Typeface.createFromAsset(context.getAssets(), "RobotoCondensed-Regular.ttf");
+                    txtView.setTypeface(typeface);
+                    txtView.setTextSize(24);
+
+                    TextView txtView2 = (TextView)   rootView.findViewById(R.id.CV2textView2);
+                    Typeface typeface2 = Typeface.createFromAsset(context.getAssets(), "RobotoCondensed-Regular.ttf");
+                    txtView2.setTypeface(typeface);
+                    txtView2.setTextSize(24);
                     break;
                 case 1:
                     Log.d(TAG, "case 1 selected ");
-                    rootView = inflater.inflate(R.layout.fragment_mainlogin, container, false);
+                    rootView = inflater.inflate(R.layout.fragment_loginscreen, container, false);
                     //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
                     //textView.setText("This is " + String.valueOf( 1));
                     savedInstanceStateFromFragment = savedInstanceState;
@@ -738,7 +1017,35 @@ public class MainActivity extends  Activity
                     // Large sign-in
                     ((SignInButton) rootView.findViewById(R.id.plus_sign_in_button)).setSize(SignInButton.SIZE_WIDE);
 
+                    //TextView textView = (TextView) rootView.findViewById(R.id.App_Title);
+                    //Typeface typeface3 = Typeface.createFromAsset(context.getAssets(), "RobotoCondensed-Regular.ttf");
+                    //textView.setTypeface(typeface3);
 
+                    //FB
+                    loginButton = (LoginButton) rootView.findViewById(R.id.login_button);
+
+                    loginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));//"user_friends");
+                    // If using in a fragment
+                    //loginButton.setFragment(this);
+                    // Other app specific specialization
+
+                    // Callback registration
+//                    loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+//                        @Override
+//                        public void onSuccess(LoginResult loginResult) {
+//                            // App code
+//                        }
+//
+//                        @Override
+//                        public void onCancel() {
+//                            // App code
+//                        }
+//
+//                        @Override
+//                        public void onError(FacebookException exception) {
+//                            // App code
+//                        }
+//                    });
                     break;
 
                 case 2:
@@ -764,6 +1071,10 @@ public class MainActivity extends  Activity
 
                 case 6:
                     rootView = inflater.inflate(R.layout.fragment_about, container, false);
+                    //forgot password
+                    TextView textViewForgotPassword = (TextView) rootView.findViewById(R.id.about_organization);
+                    textViewForgotPassword.setMovementMethod(LinkMovementMethod.getInstance());
+
                     break;
 
                 default:

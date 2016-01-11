@@ -11,23 +11,27 @@
         android:id="@+id/app_name_about"
         android:layout_marginTop="84dp"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/about_version" />
+        android:layout_alignStart="@+id/about_version"
+        android:textColor="#ff4081"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="version 0.1"
+        android:text="Version 0.1.7"
         android:id="@+id/about_version"
         android:layout_below="@+id/app_name_about"
+        android:layout_marginTop="84dp"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Build date : 11-11-2015"
+        android:text="Build date : 09-01-2016"
         android:id="@+id/about_build_date"
+        android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/about_version" />
 
@@ -35,9 +39,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Endurance Labs"
+        android:text="@string/endurance_labs"
         android:id="@+id/about_organization"
-        android:layout_marginTop="43dp"
+        android:layout_marginTop="15dp"
         android:layout_below="@+id/about_build_date"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:textColorLink="#14227d" />
 </RelativeLayout>

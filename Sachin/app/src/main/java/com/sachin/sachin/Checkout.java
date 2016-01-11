@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,7 +34,7 @@ public class Checkout extends Activity {
     String TAG = "Checkout";
     ArrayAdapter myAdapter;
     ListView orderList;
-    List<String> orderIdsFromDb;
+    List< String> orderIdsFromDb;
     List<String> listTitle;
 
 
@@ -43,28 +42,25 @@ public class Checkout extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_checkout);
+        orderIdsFromDb  = new ArrayList<String>();
         updateCart();
         updateOrderIds();
     }
 
     public void updateCart(){
-
         int size = MainActivity.mydbmanager.getAllOrders().size();
-
         List list = MainActivity.mydbmanager.getAllOrders() ;
-
-
         listTitle = new ArrayList<String>();
 
         if(list.size() > 0 ) {
-            for (int i = 0; i < list.size(); i++) {
-
+            for (int i = 0; i < size; i++) {
                 Log.d(TAG, list.get(i).toString());
                 try {
                     JSONObject jsonObj = new JSONObject(list.get(i).toString());
                     //listTitle.add(i, jsonObj.toString());
                     listTitle.add(jsonObj.toString());
-                    Log.d(TAG, "Add " + jsonObj.toString());
+                    //orderIdsFromDb.add("");
+                    Log.d(TAG, "Add = " + jsonObj.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -72,6 +68,7 @@ public class Checkout extends Activity {
         }else {
             Log.d(TAG,"list size is zero ");
         }
+
         myAdapter = new shoppingCartCustomArrayAdapter(this, listTitle);
         //myAdapter = new ArrayAdapter(this, R.layout.row_layout, R.id.listText, listTitle);
         orderList = (ListView) findViewById(R.id.checkoutorderlist);
@@ -95,8 +92,6 @@ public class Checkout extends Activity {
     }
 
     public void updateOrderIds(){
-        orderIdsFromDb  = new ArrayList<String>();
-
         //Map of OrderIDs
         List listOrderIds = MainActivity.mydbmanager.getAllOrdersIds();
         if(listOrderIds.size() > 0 ) {
@@ -108,6 +103,7 @@ public class Checkout extends Activity {
                     //listTitle.add(i, jsonObj.toString());
                     String s = listOrderIds.get(i).toString();
                     orderIdsFromDb.add(s);
+
                     Log.d(TAG, "Add OrderIds" + s);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -119,12 +115,18 @@ public class Checkout extends Activity {
     }
     public void deleteFromCart(View v){
         View parentRow = (View) v.getParent();
+        TextView orderId = (TextView) parentRow.findViewById(R.id.CVtextViewForOrderID);
+        String id = orderId.getText().toString();
+        //todo find the id n sendfor delete
+
+        int indexofHash = id.lastIndexOf("#");
+        String orderID = id.substring(indexofHash+1);
+        Log.d(TAG, "deleteFromCart orderID = " + id + "\t " +orderID);
+
+        MainActivity.cartNewOrder.clear();
+/*
         ListView listView = (ListView) parentRow.getParent();
         final int position = listView.getPositionForView(parentRow);
-        /* myAdapter.remove(position);
-        myAdapter.notifyDataSetChanged();
-        orderList.setAdapter(myAdapter);*/
-
         ((shoppingCartCustomArrayAdapter)myAdapter).deleteItem(position);
         String idToDel =  orderIdsFromDb.get(position);
         try {
@@ -133,13 +135,12 @@ public class Checkout extends Activity {
         }catch (SQLiteException e){
             e.printStackTrace();
         }
-
         if(position == 0) {
             MainActivity.cartNewOrder.clear();
         }
-
-        updateCart();
-        Log.d(TAG, "Delete from cart " + String.valueOf(position) );
+       updateCart();
+       Log.d(TAG, "Delete from cart " + String.valueOf(position) );
+        */
     }
 
     public void selectSize(View v){
@@ -231,7 +232,7 @@ public class Checkout extends Activity {
 
 
         listTitle.size();
-        String tmpline = "-----------------------------------------------------------------------------------------";
+
         List<String > OrderListToSend = new ArrayList<String>();
         try{
             for(int i=0 ; i< listTitle.size(); i++){
@@ -262,7 +263,7 @@ public class Checkout extends Activity {
             List listOrderIds = MainActivity.mydbmanager.getAllOrdersIds();
             if(listOrderIds.size() > 0 ) {
                 for (int i = 0; i < listOrderIds.size(); i++) {
-                    MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.ORDER_PLACED_TO_STORE), Integer.parseInt(listOrderIds.get(i).toString()));
+                    MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.ORDER_PLACED_TO_STORE), listOrderIds.get(i).toString());
                 }
             }
 
@@ -278,13 +279,11 @@ public class Checkout extends Activity {
             e.printStackTrace();
         }
         if(OrderListToSend.size() > 0) {
-
-            String testMail = "<p><b>Some Content</b></p>" + "<small><p>More content</p></small>";
-
-
             sendMail.sendMail(toEmailAddress, "Your order on Le Pape store", orderDetails);//orderDetails);
             startActivity(new Intent(this, MainActivity.class));
             Toast.makeText(this, "Order placed.", Toast.LENGTH_LONG).show();
+            MainActivity.cartNewOrder.clear();
+
         }else{
             Toast.makeText(this, "Nothing to order.", Toast.LENGTH_SHORT).show();
         }
@@ -314,8 +313,17 @@ public class Checkout extends Activity {
     @Override
     public void onBackPressed(){
         super.onBackPressed();
-        if(!MainActivity.cartNewOrder.checkIfDesignIsSelected()){
-            startActivity(new Intent(this, Designs.class));
+        String oID = MainActivity.cartNewOrder.getOrderID();
+        Log.d(TAG, "onBackPressed " +oID );
+        if(oID != null && oID.isEmpty()){
+            Log.d(TAG, "starting design activity");
+            Intent intent = new Intent(this, Designs.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+            //startActivity(new Intent(this, Designs.class));
+        }else {
+
         }
     }
 }

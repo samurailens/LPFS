@@ -12,6 +12,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static org.bitbucket.dollar.Dollar.$;
+
 /**
  * Created by samurai on 22-Nov-15.
  *
@@ -26,6 +28,7 @@ public class DatabaseManager extends  SQLiteOpenHelper {
     public static final String DATABASE_NAME = "MyDBName.db";
     public static final String ORDERS_TABLE_NAME = "orders";
     public static final String ORDERS_COLUMN_ID = "id";
+    public static final String ORDERS_COLUMN_UID = "order_id";
     public static final String ORDERS_COLUMN_ORDER = "order_";
     public static final String ORDERS_COLUMN_ORDERDATE = "orderdate";
     public static final String CONTACTS_COLUMN_STREET = "street";
@@ -37,6 +40,7 @@ public class DatabaseManager extends  SQLiteOpenHelper {
     public static final String MEASUREMENTS_COLUMN_ID = "id";
     public static final String MEASUREMENTS_COLUMN_USER_MEASUREMENTS = "user_measurements";
 
+    public static String lastOrderId = "";
 
     private HashMap hp;
     public String TAG= "DatabaseManager";
@@ -103,6 +107,7 @@ Log.d(TAG, "onCreate");
 
         String CREATE_TABLE_PROJECT = "CREATE TABLE " + ORDERS_TABLE_NAME + "("
                 + ORDERS_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + ORDERS_COLUMN_UID + " TEXT,"
                 + ORDERS_COLUMN_ORDER + " TEXT,"
                 + ORDERS_COLUMN_ORDERDATE + " TEXT,"
                 + CONTACTS_COLUMN_STREET + " TEXT,"
@@ -128,18 +133,24 @@ Log.d(TAG, "onCreate");
         onCreate(db);
     }
 
-    public boolean insertOrder(String order, String orderdate, String phone, String street, String place, String Status)
+    public boolean insertOrder(String OrderId, String order, String orderdate, String phone, String street, String place, String Status)
     {
         Log.d(TAG, "insertOrder");
+        lastOrderId = OrderId; //getGeneratedOrderID();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("order_", order);
-        contentValues.put("orderdate", orderdate);
-        contentValues.put("phone", phone);
-        contentValues.put("street", street);
-        contentValues.put("place", place);
+        contentValues.put(ORDERS_COLUMN_UID, lastOrderId);
+        contentValues.put(ORDERS_COLUMN_ORDER, order);
+        contentValues.put(ORDERS_COLUMN_ORDERDATE, orderdate);
+        contentValues.put(CONTACTS_COLUMN_PHONE, phone);
+        contentValues.put(CONTACTS_COLUMN_STREET, street);
+        contentValues.put(CONTACTS_COLUMN_CITY, place);
         contentValues.put(ORDERS_COLUMN_ORDERSTATUS, Status);
         db.insert("orders", null, contentValues);
+
+
+        //String lastId=getLastInsertedID();
+        //generateOrderID(Integer.parseInt(lastId));
 
         return true;
     }
@@ -149,7 +160,7 @@ Log.d(TAG, "onCreate");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(MEASUREMENTS_COLUMN_USER_MEASUREMENTS, Measurements);
-        db.insert( MEASUREMENTS_TABLE, null, contentValues);
+        db.insert(MEASUREMENTS_TABLE, null, contentValues);
         return true;
     }
 
@@ -180,6 +191,7 @@ Log.d(TAG, "onCreate");
     {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+
         contentValues.put("order_", order);
         contentValues.put("orderdate", orderdate);
         contentValues.put("phone", phone);
@@ -192,12 +204,12 @@ Log.d(TAG, "onCreate");
 
 
 
-    public Integer deleteOrder (Integer id)
+    public Integer deleteOrder (String orderID)
     {
         SQLiteDatabase db = this.getWritableDatabase();
         int i = db.delete("orders",
-                "id = ? ",
-                new String[]{Integer.toString(id)});
+                "order_id = ? ",
+                new String[]{orderID});
 
         db.close();
         return i;
@@ -231,7 +243,7 @@ Log.d(TAG, "onCreate");
 
         //hp = new HashMap();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from orders", null );
+        Cursor res =  db.rawQuery("select * from orders", null);
         res.moveToFirst();
 
         while(res.isAfterLast() == false){
@@ -301,7 +313,7 @@ Log.d(TAG, "onCreate");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ORDERS_COLUMN_ORDERSTATUS, status);
-        db.update("orders", contentValues, "id = ? ", new String[]{Integer.toString(orderID) } );
+        db.update("orders", contentValues, "order_id = ? ", new String[]{Integer.toString(orderID) } );
     }
 
     public String getLastInsertedID(){
@@ -310,14 +322,15 @@ Log.d(TAG, "onCreate");
         Cursor res =  db.rawQuery( "select * from orders", null );
         res.moveToLast();
         lastID = res.getString(res.getColumnIndex(ORDERS_COLUMN_ID));
-        return lastID;
+
+        return lastOrderId;
     }
 
-    public boolean updateOrderDetails(String orderDetails, int orderID){
+    public boolean updateOrderDetails(String orderDetails, String orderID){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ORDERS_COLUMN_ORDER, orderDetails);
-        db.update("orders", contentValues, "id = ? ", new String[]{Integer.toString(orderID) } );
+        db.update("orders", contentValues, "order_id = ? ", new String[]{orderID } );
         return true;
     }
 
@@ -325,7 +338,7 @@ Log.d(TAG, "onCreate");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("phone", phone);
-        db.update("orders", contentValues, "id = ? ", new String[]{Integer.toString(orderid) } );
+        db.update("orders", contentValues, "order_id = ? ", new String[]{Integer.toString(orderid) } );
         return true;
     }
 
@@ -333,15 +346,32 @@ Log.d(TAG, "onCreate");
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("street", street);
-        db.update("orders", contentValues, "id = ? ", new String[]{Integer.toString(orderid) } );
+        db.update("orders", contentValues, "order_id = ? ", new String[]{Integer.toString(orderid) } );
         return true;
     }
 
-    public boolean updateStatus(String status, int orderid){
+    public boolean updateStatus(String status, String orderid){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(ORDERS_COLUMN_ORDERSTATUS, status);
-        db.update("orders", contentValues, "id = ? ", new String[]{Integer.toString(orderid) } );
+        db.update("orders", contentValues, "order_id = ? ", new String[]{orderid } );
         return true;
     }
+
+
+
+    public String getGeneratedOrderID(){
+        String OrderId = randomString(12);
+        Log.d(TAG, "generated id = " + OrderId);
+        return OrderId;
+    }
+
+    String validCharacters = $('0', '9').join() + $('A', 'Z').join();
+
+    String randomString(int length) {
+        return $(validCharacters).shuffle().slice(length).toString();
+    }
+
+
+
 }

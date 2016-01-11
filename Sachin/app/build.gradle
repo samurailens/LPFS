@@ -4,17 +4,19 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.0"
+
     // Enabling multidex support.
     //multiDexEnabled true
 
 
     defaultConfig {
         applicationId "com.sachin.sachin"
-        minSdkVersion 17
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+        //multiDexEnabled true
     }
     buildTypes {
         release {
@@ -32,7 +34,12 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
     compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.android.support:cardview-v7:23.0.0'
 
+    //Random String generator
+    compile 'org.bitbucket.dollar:dollar:1.0-beta3'
+
+    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     //compile 'com.google.android.gms:play-services-identity:8.1.0'
     //compile 'com.google.android.gms:play-services-plus:8.1.0'
 
@@ -45,10 +52,10 @@ dependencies {
     //    compile 'com.google.android.gms:play-services:8.1.0'
     //    compile 'com.android.support:appcompat-v7:23.1.0'
     //    compile 'com.google.android.gms:play-services:6.1.71'
-    compile files('libs/activation.jar')
-    compile files('libs/mail.jar')
-    compile files('libs/additional.jar')
-    compile files('libs/javax.mail-1.5.4.jar')
+//    compile files('libs/activation.jar')
+//    compile files('libs/mail.jar')
+//    compile files('libs/additional.jar')
+//    compile files('libs/javax.mail-1.5.4.jar')
     //compile files('libs/picasso-2.5.2.jar')
 }
 

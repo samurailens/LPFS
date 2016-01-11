@@ -1,6 +1,8 @@
 package com.sachin.sachin;
 
 import android.app.ListActivity;
+import android.content.Intent;
+import android.database.sqlite.SQLiteException;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -22,7 +26,9 @@ public class ShoppingCart extends ListActivity {
 
     CartManager objCartManager ;
     String TAG = "ShoppingCart";
+    List<String> orderIdsFromDb;
 
+    ArrayAdapter myAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,11 +39,18 @@ public class ShoppingCart extends ListActivity {
 //        TextView yourTextView = (TextView) findViewById(titleId);
         //yourTextView.setTextColor(getResources().getColor(R.color.black));
         TextView txtView = (TextView)   findViewById(R.id.shoppingcarttextview);
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "RobotoCondensed-Regular.ttf");
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "Roboto-Medium.ttf");
         txtView.setTypeface(typeface);
         //yourTextView.setTypeface(typeface);
-
+        txtView.setTextSize(14);
         updateCart();
+
+        String oID = MainActivity.cartNewOrder.getOrderID();
+        if( oID == null ){
+
+            Button button = (Button)   findViewById(R.id.shpcrtcheckout);
+            button.setEnabled(false);
+        }
     }
 
     public void updateCart(){
@@ -45,7 +58,7 @@ public class ShoppingCart extends ListActivity {
         int size = MainActivity.mydbmanager.getAllOrders().size();
 
         List list = MainActivity.mydbmanager.getAllOrders() ;
-        ArrayAdapter myAdapter;
+
 
         List<String> listTitle = new ArrayList<String>();
 
@@ -75,8 +88,41 @@ public class ShoppingCart extends ListActivity {
 
     }
 
-    public void deleteFromCart(){
+    public void deleteFromCart(View v){
+        View parentRow = (View) v.getParent();
+        ListView listView = (ListView) parentRow.getParent();
+        final int position = listView.getPositionForView(parentRow);
+        /* myAdapter.remove(position);
+        myAdapter.notifyDataSetChanged();
+        orderList.setAdapter(myAdapter);*/
 
+        ((shoppingCartCustomArrayAdapter)myAdapter).deleteItem(position);
+        String idToDel =  orderIdsFromDb.get(position);
+        try {
+            int noofRowsEffected = MainActivity.mydbmanager.deleteOrder("");
+            Log.d(TAG, "Delete from DB " + idToDel + "Row Del " + String.valueOf(noofRowsEffected));
+        }catch (SQLiteException e){
+            e.printStackTrace();
+        }
+
+        if(position == 0) {
+            MainActivity.cartNewOrder.clear();
+        }
+
+        updateCart();
+        Log.d(TAG, "Delete from cart " + String.valueOf(position) );
+    }
+
+    public void checkout(View v){
+        String oID = MainActivity.cartNewOrder.getOrderID();
+        if(oID!=null && !oID.isEmpty()){
+            startActivity(new Intent(this, Checkout.class));
+        }
+
+    }
+
+    public void shopmore(View v){
+        startActivity(new Intent(this, Designs.class));
     }
 
 

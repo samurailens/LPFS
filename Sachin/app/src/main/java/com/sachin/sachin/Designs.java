@@ -41,7 +41,7 @@ public class Designs extends Activity {
     ImageView previewImageView;
     TextView designTitletxtview; //designPreviewtxtView
     public ArrayList<String> existingOrdersinDb;
-    public String  lastInsertedOrderId = "-1";
+    public String  lastInsertedOrderId = "";
     ProgressBar progressBar;
 
     public static String selectedDesignUrl;
@@ -50,11 +50,11 @@ public class Designs extends Activity {
     static int Imgh,Imgw;
 
     private CustomData[] mCustomData = new CustomData[] {
-            new CustomData("One shoulder waist line", "http://trycatchthrow.in/LPFS/images/designs/oneshoulderwaistline.png", 100),
-            new CustomData("Scalloped collar", "http://trycatchthrow.in/LPFS/images/designs/scalloped_collar.png", 100),
+            new CustomData("1 shoulder waist line", "http://trycatchthrow.in/LPFS/images/designs/oneshoulderwaistline.png", 100),
+            new CustomData("Scalloped collar", "http://trycatchthrow.in/LPFS/images/designs/scalloped_collar.png", 200),
 
-            new CustomData("Square neck", "http://trycatchthrow.in/LPFS/images/designs/squareneck.png", 100),
-            new CustomData("Sweetheart neckline", "http://trycatchthrow.in/LPFS/images/designs/sweetheartneckline.png", 100),
+            new CustomData("Square neck", "http://trycatchthrow.in/LPFS/images/designs/squareneck.png", 300),
+            new CustomData("Sweetheart neckline", "http://trycatchthrow.in/LPFS/images/designs/sweetheartneckline.png", 400),
 
 
 /*            new CustomData(Color.RED, "Red", 100),
@@ -99,7 +99,7 @@ public class Designs extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_designs);
+        setContentView(R.layout.activity_designs_newlayout);
         // Get references to UI widgets
         //mHlvSimpleList = (HorizontalListView) findViewById(R.id.hlvSimpleList);
         mHlvCustomList = (HorizontalListView) findViewById(R.id.hlvCustomList);
@@ -117,8 +117,8 @@ public class Designs extends Activity {
         designTitletxtview = (TextView) findViewById(R.id.designPreviewtxtView); //designPreviewtxtView
         previewImageView = (ImageView) findViewById(R.id.previewImageview);
         existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
-        progressBar.setProgress(0);
+        //progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        //progressBar.setProgress(0);
 
         updateCartUI();
 
@@ -176,6 +176,7 @@ public class Designs extends Activity {
                 selectedDesignUrl = url;
                 Picasso.with(MainActivity.context)
                         .load(url)
+                        .placeholder(R.drawable.flower7272)
                         .into(previewImageView);
 
                 //designTitletxtview.setText(dataClicked.getText());
@@ -184,7 +185,7 @@ public class Designs extends Activity {
                 MainActivity.cartNewOrder.addDesign(dataClicked.getBackgroundColor(), position, (int) dataClicked.getCost(), 1);
 
                 //Todo:: update content description
-                //selectedItemDescription.setText("This is " + dataClicked.getText());
+                selectedItemDescription.setText("Description : " + dataClicked.getBackgroundColor());
 
                 //Object o = mHlvCustomList.getItemAtPosition(position);
                 //String  str=(prestationEco)o;//As you are using Default String Adapter
@@ -197,7 +198,7 @@ public class Designs extends Activity {
                 int h = previewImageView.getHeight();
                 Imgh = h;
                 Imgw = w;
-                Log.d(TAG, "h , w " + String.valueOf(h) + "\t w " + String.valueOf(w)) ;
+                Log.d(TAG, "h , w " + String.valueOf(h) + "\t w " + String.valueOf(w));
 
                 Log.d(TAG, dataClicked.getText() + String.valueOf(position) + String.valueOf(dataClicked.getCost()) + String.valueOf(1));
             }
@@ -252,9 +253,8 @@ public class Designs extends Activity {
 
     public void addtocart(View v){
         overridePendingTransition(0,0);
-        //Button btnAddToCart = (Button) findViewById(R.id.adddesgntocartbutton);
         Date currentDate = new Date(System.currentTimeMillis());
-        JSONObject neworder = MainActivity.cartNewOrder.getDetails();
+
 
         //todo:
         //UPDATE THE CART UI
@@ -263,68 +263,41 @@ public class Designs extends Activity {
         if ( MainActivity.cartNewOrder.checkIfDesignIsSelected() ) {
             boolean isOrderinCart = isOrderAlreadyInCart();
             if(!isOrderinCart){
-                MainActivity.mydbmanager.insertOrder(neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.DESIGN_SELECTION_IN_PROGRESS));
+                lastInsertedOrderId =  MainActivity.mydbmanager.getGeneratedOrderID();
+                MainActivity.cartNewOrder.setOrderID(lastInsertedOrderId);
+                JSONObject neworder = MainActivity.cartNewOrder.getDetails();
+                MainActivity.mydbmanager.insertOrder(lastInsertedOrderId, neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.DESIGN_SELECTION_IN_PROGRESS));
                 existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
                 lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
-                Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId);
+                Log.d(TAG, "after insert lastInsertedOrderId = " + lastInsertedOrderId);
+
             }else {
                 updateExistingOrder();
                 Toast.makeText(Designs.this, "Updated order.", Toast.LENGTH_SHORT).show();
             }
             //Update cart size
             updateCartUI();
-            //btnAddToCart.setText("Update");
             Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
-            progressBar.setProgress(33);
         }else {
             Toast.makeText(this, "Select a design", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public void saveSelectedDesign(){
-        Date currentDate = new Date(System.currentTimeMillis());
-        JSONObject neworder = MainActivity.cartNewOrder.getDetails();
-
-        if ( MainActivity.cartNewOrder.checkIfDesignIsSelected() ) {
-            boolean isOrderinCart = isOrderAlreadyInCart();
-            if(!isOrderinCart){
-                MainActivity.mydbmanager.insertOrder(neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.DESIGN_SELECTION_IN_PROGRESS));
-                existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
-                lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
-                Log.d(TAG, "lastInsertedOrderId = " + lastInsertedOrderId);
-            }else {
-                updateExistingOrder();
-                Toast.makeText(Designs.this, "Updated order.", Toast.LENGTH_SHORT).show();
-            }
-            //Update cart size
-            updateCartUI();
-
-            Log.d(TAG, "DB size " + String.valueOf(MainActivity.mydbmanager.getAllOrders().size()));
-        }else {
-            Toast.makeText(this, "Select a design", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void updateExistingOrder(){
-        int i = Integer.parseInt(lastInsertedOrderId);
-        if( i > 0) {
-            MainActivity.mydbmanager.updateOrderDetails(MainActivity.cartNewOrder.getDetails().toString(), i);
-        }
+            MainActivity.mydbmanager.updateOrderDetails(MainActivity.cartNewOrder.getDetails().toString(), lastInsertedOrderId);
     }
 
     private boolean isOrderAlreadyInCart(){
         JSONObject neworder = MainActivity.cartNewOrder.getDetails();
         boolean isNewOrderpresentInExistingOrders  = false ;
-
         isNewOrderpresentInExistingOrders = existingOrdersinDb.contains(neworder.toString());
-
         if(!isNewOrderpresentInExistingOrders){
             //Order not in Cart. Check any new Order added this session.
-            int i = Integer.parseInt(lastInsertedOrderId);
-            if( i > 0){
+            if( !lastInsertedOrderId.isEmpty()){
                 //There was an order added in this session, update same order
-                Log.d(TAG, "isOrderAlreadyInCart i="+String.valueOf(i));
+                Log.d(TAG, "isOrderAlreadyInCart i= "+ lastInsertedOrderId);
                 return true;
             }
 

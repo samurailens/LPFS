@@ -1,27 +1,171 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity$PlaceholderFragment"
-    android:background="#ffe5f1"
-    android:backgroundTintMode="add">
-<!-- "#ffcf5b"
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Start Designing"
-        android:id="@+id/showdesignbtn"
-        android:onClick="showDesign"
-        android:layout_marginBottom="50dp"
 
-        android:background="#ffcf5b"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-        -->
+    android:backgroundTintMode="add">
+
+    <!--android:background="#ffe5f1"-->
 
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="false">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view_create_dress"
+            android:layout_gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            card_view:cardCornerRadius="2dp"
+            card_view:contentPadding="10dp"
+            android:layout_marginTop="60dp">
+
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:onClick="showDesign"
+
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:clickable="true">
+
+                <ImageView
+                    android:background="@drawable/createdress36"
+                    android:id="@+id/CVimageview1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:contentDescription="This is imageView" />
+
+                <TextView
+                    android:id="@+id/CVtextView2"
+                    android:text="Create your dress"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/CVimageview1" />
+                <TextView
+                    android:layout_below="@+id/CVtextView2"
+                    android:layout_toRightOf="@+id/CVimageview1"
+                    android:id="@+id/textView3"
+                    android:text="Designs, exclusively created for you"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card_view_check_orders"
+            android:layout_below="@+id/card_view_create_dress"
+            android:layout_gravity="center"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            card_view:cardCornerRadius="2dp"
+            card_view:contentPadding="10dp"
+            android:layout_marginTop="60dp">
+
+            <RelativeLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:clickable="true"
+                android:onClick="showShoppingCart">
+
+                <ImageView
+                    android:background="@drawable/order36"
+                    android:id="@+id/CV2imageview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:contentDescription="This is imageView" />
+
+                <TextView
+                    android:id="@+id/CV2textView2"
+                    android:text="Your orders"
+                    android:textStyle="bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/CV2imageview" />
+                <TextView
+                    android:layout_below="@+id/CV2textView2"
+                    android:layout_toRightOf="@+id/CV2imageview"
+                    android:id="@+id/CV2textView3"
+                    android:text="Track your past orders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+
+    </RelativeLayout>
+
+
+    <!-- "#ffcf5b"
+     <android.support.v7.widget.CardView
+                android:id="@+id/card_view2"
+                android:layout_gravity="center"
+                android:layout_width="fill_parent"
+                android:layout_height="75dp"
+                android:layout_margin="5dp"
+                card_view:cardCornerRadius="2dp"
+                card_view:contentPadding="10dp"
+                android:layout_marginTop="60dp">
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <ImageView
+                        android:text="Sachin"
+                        android:id="@+id/textView21"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:layout_alignParentTop="true"/>
+
+                    <TextView
+                        android:id="@+id/textView22"
+                        android:text="This is sachin"
+                        android:background="#DDD"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_below="@+id/textView21"/>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Designing"
+            android:id="@+id/showdesignbtn"
+            android:onClick="showDesign"
+            android:layout_marginBottom="50dp"
+
+            android:background="#ffcf5b"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+            -->
+
+    <RelativeLayout
+        android:visibility="gone"
         android:layout_marginTop="25dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,21 +198,21 @@
         <!--android:drawableRight="@android:drawable/ic_input_add"-->
     </RelativeLayout>
 
-<!---
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:background="@null"
-        android:text="Create dress"
-        android:layout_centerHorizontal="true" /> -->
-<!--    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageViewPica"
-        android:layout_marginTop="74dp" />-->
+    <!---
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:background="@null"
+            android:text="Create dress"
+            android:layout_centerHorizontal="true" /> -->
+    <!--    <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewPica"
+            android:layout_marginTop="74dp" />-->
 
 </RelativeLayout>

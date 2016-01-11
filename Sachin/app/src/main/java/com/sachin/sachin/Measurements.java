@@ -1,5 +1,6 @@
 package com.sachin.sachin;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -27,7 +28,7 @@ public class Measurements extends Activity {
     String selectedSizeTxt ;
     public ArrayList<String> existingOrdersinDb;
     public String lastInsertedOrderId = "-1";
-    public String measurementsSelected;
+    public static String measurementsSelected;
     ProgressBar progressBar;
     TextView cartTextView;
 
@@ -63,6 +64,7 @@ public class Measurements extends Activity {
         return true;
     }
 
+    @SuppressLint("NewApi")
     private void clearSelection(){
         btnXS.setBackground((getDrawable(R.drawable.ripple)));
         btnS.setBackground((getDrawable(R.drawable.ripple)));
@@ -311,7 +313,7 @@ public class Measurements extends Activity {
         Button btnAddToCart = (Button) findViewById(R.id.checkout);
         String s = btnAddToCart.getText().toString();
         if ( addToCart() ) {
-            MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.PAYMENT_PROGRESS), Integer.parseInt(lastInsertedOrderId));
+            MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.PAYMENT_PROGRESS), lastInsertedOrderId);
             startActivity(new Intent(this, Checkout.class));
         }else {
             //addToCart();
@@ -333,7 +335,7 @@ public class Measurements extends Activity {
             boolean isOrderinCart = isOrderAlreadyInCart();
             if(!isOrderinCart){
 
-                MainActivity.mydbmanager.insertOrder(neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.PAYMENT_PROGRESS));
+                //MainActivity.mydbmanager.insertOrder(neworder.toString(), currentDate.toString(), "000000000", "address1", "address2",String.valueOf(ORDER_STATUS.PAYMENT_PROGRESS));
                 MainActivity.mydbmanager.insertMeasurements(measurementsSelected);
                 existingOrdersinDb = MainActivity.mydbmanager.getAllOrders();
                 lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
@@ -366,15 +368,11 @@ public class Measurements extends Activity {
 
     private void updateExistingOrder(){
         lastInsertedOrderId = MainActivity.mydbmanager.getLastInsertedID();
-        int i = Integer.parseInt(lastInsertedOrderId);
-
-        Log.d(TAG, "lastInsertedOrderId " + lastInsertedOrderId);
-        if( i > 0) {
-            MainActivity.mydbmanager.updateOrderDetails(MainActivity.cartNewOrder.getDetails().toString(),i );
-            MainActivity.mydbmanager.insertMeasurements(measurementsSelected);
-            MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.PAYMENT_PROGRESS), i);
-        }
+        MainActivity.mydbmanager.updateOrderDetails(MainActivity.cartNewOrder.getDetails().toString(),lastInsertedOrderId );
+        MainActivity.mydbmanager.insertMeasurements(measurementsSelected);
+        MainActivity.mydbmanager.updateStatus(String.valueOf(ORDER_STATUS.PAYMENT_PROGRESS), lastInsertedOrderId);
         updateCartUI();
+        Log.d(TAG, "lastInsertedOrderId " + lastInsertedOrderId);
     }
 
     private boolean isOrderAlreadyInCart(){
@@ -385,15 +383,12 @@ public class Measurements extends Activity {
 
         if(!isNewOrderpresentInExistingOrders){
             //Order not in Cart. Check any new Order added this session.
-            int i = Integer.parseInt(lastInsertedOrderId);
-            if( i > 0){
+            if( !lastInsertedOrderId.isEmpty()){
                 //There was an order added in this session, update same order
-                Log.d(TAG, "isOrderAlreadyInCart i="+String.valueOf(i));
+                Log.d(TAG, "isOrderAlreadyInCart i= "+lastInsertedOrderId);
                 return true;
             }
-
         }
-
         return isNewOrderpresentInExistingOrders;
     }
 
@@ -432,7 +427,7 @@ public class Measurements extends Activity {
 
     public  void cart(View v){
         overridePendingTransition(0, 0);
-        JSONObject neworder = MainActivity.cartNewOrder.getDetails();
+
         if( MainActivity.mydbmanager.getAllOrders().size() > 0) {
             Intent i = new Intent(this, ShoppingCart.class);
             startActivity(i);
